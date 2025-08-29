@@ -1,0 +1,120 @@
+import streamlit as st
+
+# --- BANCO DE DADOS SIMULADO DAS HABILIDADES ---
+bncc_database = {
+    "1º Ano - Ensino Fundamental": {
+        "Língua Portuguesa": [
+            {"codigo": "EF01LP02", "descricao": "Escrever, espontaneamente ou por ditado, palavras e frases de forma alfabética.", "tags": ["escrita", "alfabetizacao"]},
+            {"codigo": "EF01LP05", "descricao": "Reconhecer o sistema de escrita alfabética como representação dos sons da fala.", "tags": ["leitura", "consciencia fonologica"]},
+        ],
+        "Matemática": [
+            {"codigo": "EF01MA01", "descricao": "Utilizar números naturais como indicador de quantidade ou de ordem em diferentes situações cotidianas.", "tags": ["numeros", "contagem"]},
+            {"codigo": "EF01MA06", "descricao": "Construir fatos básicos da adição e utilizá-los em procedimentos de cálculo para resolver problemas.", "tags": ["calculo", "soma", "problemas"]},
+        ]
+    },
+    "2º Ano - Ensino Fundamental": {
+        "Língua Portuguesa": [
+            {"codigo": "EF12LP01", "descricao": "Ler palavras novas com precisão na decodificação, no caso de palavras de uso frequente, ler globalmente, por memorização.", "tags": ["leitura", "decodificacao"]},
+        ],
+        "Matemática": [
+             {"codigo": "EF02MA06", "descricao": "Resolver e elaborar problemas de adição e de subtração, envolvendo números de até três ordens, com os significados de juntar, acrescentar, separar, retirar.", "tags": ["calculo", "soma", "subtracao", "problemas"]}
+        ]
+    }
+}
+
+# --- FUNÇÃO DE LÓGICA DO APP ---
+def sugerir_habilidades_bncc(ano_escolar, disciplina, palavras_chave):
+    habilidades_sugeridas = []
+    palavras_chave_lista = [palavra.strip().lower() for palavra in palavras_chave.split(',')]
+    
+    if ano_escolar in bncc_database and disciplina in bncc_database[ano_escolar]:
+        for habilidade in bncc_database[ano_escolar][disciplina]:
+            if any(tag in palavras_chave_lista for tag in habilidade["tags"]):
+                habilidades_sugeridas.append(habilidade)
+    return habilidades_sugeridas
+
+# --- INTERFACE GRÁFICA DO APLICATIVO ---
+
+st.set_page_config(layout="wide", page_title="INTERVENÇÃO IA")
+
+st.title("🧠 INTERVENÇÃO IA")
+st.subheader("Seu assistente psicopedagógico para adaptação curricular")
+
+st.markdown("---")
+
+# MÓDULO 1: GERADOR DE PEI (Sugestões BNCC)
+st.header("Módulo 1: Sugestão de Habilidades da BNCC")
+
+col1, col2 = st.columns(2)
+
+with col1:
+    ano_selecionado = st.selectbox(
+        "1. Selecione o Ano Escolar:",
+        options=list(bncc_database.keys())
+    )
+    
+    disciplina_selecionada = st.selectbox(
+        "2. Selecione a Disciplina:",
+        options=list(bncc_database[ano_selecionado].keys())
+    )
+
+with col2:
+    palavras_chave_input = st.text_input(
+        "3. Digite as dificuldades do aluno (separadas por vírgula):",
+        placeholder="Ex: leitura, calculo, escrita"
+    )
+
+if st.button("Buscar Habilidades para o PEI"):
+    if palavras_chave_input:
+        sugestoes = sugerir_habilidades_bncc(ano_selecionado, disciplina_selecionada, palavras_chave_input)
+        st.subheader("✅ Habilidades Recomendadas:")
+        if sugestoes:
+            for habilidade in sugestoes:
+                st.success(
+                    f"**Código:** {habilidade['codigo']}\n\n"
+                    f"**Descrição:** {habilidade['descricao']}"
+                )
+        else:
+            st.warning("Nenhuma habilidade encontrada para os critérios informados.")
+    else:
+        st.error("Por favor, informe ao menos uma palavra-chave de dificuldade.")
+
+st.markdown("\n\n---")
+
+# MÓDULO 2: CRIADOR DE ATIVIDADES ADAPTADAS
+st.header("Módulo 2: Adaptador Rápido de Atividades")
+
+st.write("Crie uma atividade e aplique adaptações instantaneamente.")
+
+enunciado_original = st.text_input("1. Digite o enunciado da atividade:", "Resolva as operações abaixo.")
+questoes_originais = st.text_area(
+    "2. Digite as questões (uma por linha):",
+    "a) 5 + 3 = ?\nb) 10 - 4 = ?\nc) 7 + 8 = ?\nd) 15 - 6 = ?"
+)
+
+st.subheader("3. Selecione as Adaptações:")
+col_adapt1, col_adapt2, col_adapt3 = st.columns(3)
+with col_adapt1:
+    simplificar_enunciado = st.checkbox("Simplificar enunciado", help="Adiciona uma frase de incentivo.")
+with col_adapt2:
+    reduzir_questoes = st.checkbox("Reduzir nº de questões", help="Mostra apenas as duas primeiras questões.")
+with col_adapt3:
+    destacar_visual = st.checkbox("Destacar visualmente", help="Usa um bloco de alerta para chamar a atenção.")
+
+st.subheader("✅ Atividade Adaptada (Pré-visualização):")
+
+# Lógica da adaptação
+enunciado_adaptado = f"Vamos praticar! {enunciado_original}" if simplificar_enunciado else enunciado_original
+questoes_lista = questoes_originais.split('\n')
+questoes_adaptadas = questoes_lista[:2] if reduzir_questoes else questoes_lista
+
+# Exibição
+if destacar_visual:
+    with st.container(border=True):
+        st.markdown(f"**{enunciado_adaptado}**")
+        for q in questoes_adaptadas:
+            st.write(q)
+else:
+    st.markdown(f"**{enunciado_adaptado}**")
+    for q in questoes_adaptadas:
+        st.write(q)
