@@ -49,99 +49,15 @@ if st.session_state.edit_mode:
                 grau_parentesco = st.text_input("Grau de parentesco do responsável", value=dados_cadastro.get("grau_parentesco", ""))
                 ano_escolar = st.text_input("Ano escolar", value=dados_cadastro.get("ano_escolar", ""))
 
-        with st.expander("AUTONOMIA"):
-            radio_opts_sim_nao = ["Sim", "Não"]
-            comunicacao = st.text_area("Formas de Comunicação", value=dados_cadastro.get("comunicacao", ""))
-            comunicacao_alt = st.radio("Utiliza comunicação alternativa?", radio_opts_sim_nao, horizontal=True, index=get_radio_index(radio_opts_sim_nao, dados_cadastro.get("comunicacao_alt")))
+        with st.expander("DESENVOLVIMENTO E SAÚDE"):
             col1, col2 = st.columns(2)
             with col1:
-                fica_sozinho = st.radio("Consegue ficar em sala de aula sozinho(a)?", radio_opts_sim_nao, index=get_radio_index(radio_opts_sim_nao, dados_cadastro.get("fica_sozinho")))
-                usa_banheiro = st.radio("Consegue utilizar o banheiro sozinho(a)?", radio_opts_sim_nao, index=get_radio_index(radio_opts_sim_nao, dados_cadastro.get("usa_banheiro")))
+                diagnostico = st.text_input("Diagnóstico", value=dados_cadastro.get("diagnostico", ""))
             with col2:
-                bebe_agua = st.radio("Consegue beber água sozinho(a)?", radio_opts_sim_nao, index=get_radio_index(radio_opts_sim_nao, dados_cadastro.get("bebe_agua")))
-                mobilidade_reduzida = st.radio("Possui mobilidade reduzida?", radio_opts_sim_nao, index=get_radio_index(radio_opts_sim_nao, dados_cadastro.get("mobilidade_reduzida")))
-            costuma_crises = st.radio("Costuma ter crises?", ["Sim", "Não", "Raramente"], horizontal=True, index=get_radio_index(["Sim", "Não", "Raramente"], dados_cadastro.get("costuma_crises")))
+                comorbidades = st.text_input("Comorbidades", value=dados_cadastro.get("comorbidades", ""))
+            terapias = st.text_area("Terapias", value=dados_cadastro.get("terapias", ""))
             col1, col2 = st.columns(2)
             with col1:
-                principais_gatilhos = st.text_area("Principais gatilhos", value=dados_cadastro.get("principais_gatilhos", ""))
+                medico_responsavel = st.text_input("Médico responsável", value=dados_cadastro.get("medico_responsavel", ""))
             with col2:
-                como_regula = st.text_area("Como se regula", value=dados_cadastro.get("como_regula", ""))
-
-        with st.expander("GENERALIZAÇÃO E METAS DE AVDs (Atividades de Vida Diária)"):
-            st.info("Descreva as metas e os níveis de ajuda para AVDs, inspirado no modelo (1ª Ajuda Física, 2ª Gestual, 3º Independente).")
-            avd_higiene = st.text_area("Metas e Estratégias para Higiene (Limpar-se, Escovar os dentes, etc.)", value=dados_cadastro.get("avd_higiene", ""))
-            avd_alimentacao = st.text_area("Metas e Estratégias para Alimentação (Lanchar com independência, etc.)", value=dados_cadastro.get("avd_alimentacao", ""))
-
-        # Botões de ação
-        col_submit, col_cancel = st.columns(2)
-        with col_submit:
-            submitted = st.form_submit_button("✅ Salvar Prontuário")
-        with col_cancel:
-            if st.form_submit_button("❌ Cancelar"):
-                st.session_state.edit_mode = False
-                st.rerun()
-
-        if submitted:
-            if not nome_aluno:
-                st.error("O nome do aluno é obrigatório!")
-            else:
-                novos_dados_cadastro = {
-                    "data_nascimento": data_nascimento.strftime('%Y-%m-%d'), "principal_responsavel": principal_responsavel, "grau_parentesco": grau_parentesco,
-                    "nome_escola": nome_escola, "ano_escolar": ano_escolar,
-                    "comunicacao": comunicacao, "comunicacao_alt": comunicacao_alt, "fica_sozinho": fica_sozinho, "usa_banheiro": usa_banheiro,
-                    "bebe_agua": bebe_agua, "mobilidade_reduzida": mobilidade_reduzida, "costuma_crises": costuma_crises, "principais_gatilhos": principais_gatilhos,
-                    "como_regula": como_regula, "avd_higiene": avd_higiene, "avd_alimentacao": avd_alimentacao,
-                }
-                salvar_dados_cadastro(nome_aluno, novos_dados_cadastro)
-                st.session_state.nome_aprendiz_ativo = nome_aluno
-                st.session_state.edit_mode = False
-                st.success(f"Prontuário de '{nome_aluno}' salvo com sucesso!")
-                st.rerun()
-
-# --- MODO DE VISUALIZAÇÃO ---
-else:
-    st.header(f"Prontuário: {st.session_state.nome_aprendiz_ativo}")
-    dados_cadastro = st.session_state.get("aprendiz_ativo", {}).get("cadastro", {})
-    
-    with st.container(border=True):
-        st.subheader("Dados do Estudante")
-        col1, col2, col3 = st.columns(3)
-        data_nasc_str = dados_cadastro.get('data_nascimento')
-        idade = "N/A"
-        if data_nasc_str:
-            idade = calcular_idade(data_nasc_str)
-            col2.metric("Data de Nasc.", datetime.datetime.strptime(data_nasc_str, '%Y-%m-%d').strftime("%d/%m/%Y"))
-        else:
-            col2.metric("Data de Nasc.", "N/A")
-        col1.metric("Idade", f"{idade} anos" if isinstance(idade, int) else "N/A")
-        col3.metric("Ano Escolar", dados_cadastro.get('ano_escolar') or "Não informado")
-
-    with st.container(border=True):
-        st.subheader("Autonomia")
-        st.write(f"**Formas de Comunicação:** {dados_cadastro.get('comunicacao') or 'Não informado'}")
-        st.write(f"**Utiliza comunicação alternativa?** {dados_cadastro.get('comunicacao_alt') or 'Não informado'}")
-        # Adicione outros campos de autonomia para visualização se desejar
-
-    with st.container(border=True):
-        st.subheader("Generalização e Metas de AVDs")
-        st.write("**Metas para Higiene:**")
-        st.info(dados_cadastro.get('avd_higiene') or "Nenhuma meta definida.")
-        st.write("**Metas para Alimentação:**")
-        st.info(dados_cadastro.get('avd_alimentacao') or "Nenhuma meta definida.")
-
-    st.write("")
-    col1, col2, col3 = st.columns([1,1.2,1])
-    with col1:
-        if st.button("📝 Editar Prontuário"):
-            st.session_state.edit_mode = True
-            st.rerun()
-    with col2:
-        if st.button("➕ Novo Plano (PEI)"):
-            st.switch_page("pages/3_Plano_de_Ensino_Individualizado (PEI).py")
-    with col3:
-        if st.button("❌ Excluir Aluno", type="primary"):
-            if excluir_aprendiz(st.session_state.nome_aprendiz_ativo):
-                st.success(f"Aprendiz '{st.session_state.nome_aprendiz_ativo}' excluído.")
-                st.session_state.nome_aprendiz_ativo = None
-                st.session_state.aprendiz_ativo = None
-                st.rerun()
+                contato_medico =
