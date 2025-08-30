@@ -12,25 +12,14 @@ def carregar_dados():
         except json.JSONDecodeError:
             return {}
 
-def salvar_dados_aprendiz(nome_aprendiz, dados_para_salvar, secao):
+def salvar_dados_cadastro(nome_aprendiz, dados_cadastro):
     aprendizes = carregar_dados()
     if nome_aprendiz not in aprendizes:
         aprendizes[nome_aprendiz] = {}
-    if secao not in aprendizes[nome_aprendiz]:
-        aprendizes[nome_aprendiz][secao] = {}
-    aprendizes[nome_aprendiz][secao].update(dados_para_salvar)
+    aprendizes[nome_aprendiz]["cadastro"] = dados_cadastro
     with open(DB_FILE, 'w', encoding='utf-8') as f:
         json.dump(aprendizes, f, ensure_ascii=False, indent=4)
     return True
-
-def excluir_aprendiz(nome_aprendiz):
-    aprendizes = carregar_dados()
-    if nome_aprendiz in aprendizes:
-        del aprendizes[nome_aprendiz]
-        with open(DB_FILE, 'w', encoding='utf-8') as f:
-            json.dump(aprendizes, f, ensure_ascii=False, indent=4)
-        return True
-    return False
 
 def adicionar_nova_avaliacao(nome_aprendiz, nova_avaliacao):
     aprendizes = carregar_dados()
@@ -43,11 +32,23 @@ def adicionar_nova_avaliacao(nome_aprendiz, nova_avaliacao):
         json.dump(aprendizes, f, ensure_ascii=False, indent=4)
     return True
 
-def salvar_dados_cadastro(nome_aprendiz, dados_cadastro):
+def adicionar_novo_pei(nome_aprendiz, novo_pei):
+    """ Adiciona um novo PEI à lista de PEIs do aprendiz """
     aprendizes = carregar_dados()
     if nome_aprendiz not in aprendizes:
         aprendizes[nome_aprendiz] = {}
-    aprendizes[nome_aprendiz]["cadastro"] = dados_cadastro
+    if "peis" not in aprendizes[nome_aprendiz]:
+        aprendizes[nome_aprendiz]["peis"] = []
+    aprendizes[nome_aprendiz]["peis"].append(novo_pei)
     with open(DB_FILE, 'w', encoding='utf-8') as f:
         json.dump(aprendizes, f, ensure_ascii=False, indent=4)
     return True
+
+def excluir_aprendiz(nome_aprendiz):
+    aprendizes = carregar_dados()
+    if nome_aprendiz in aprendizes:
+        del aprendizes[nome_aprendiz]
+        with open(DB_FILE, 'w', encoding='utf-8') as f:
+            json.dump(aprendizes, f, ensure_ascii=False, indent=4)
+        return True
+    return False
