@@ -64,4 +64,69 @@ with st.form("form_avaliacao"):
     hab30 = st.radio("30. Identifica dias da semana.", opcoes, horizontal=True, index=opcoes.index(dados_avaliacao.get("hab30", default_option)))
     hab31 = st.radio("31. Reconhece horas.", opcoes, horizontal=True, index=opcoes.index(dados_avaliacao.get("hab31", default_option)))
     hab32 = st.radio("32. Reconhece horas em relógio digital.", opcoes, horizontal=True, index=opcoes.index(dados_avaliacao.get("hab32", default_option)))
-    hab33 = st.
+    hab33 = st.radio("33. Reconhece horas exatas em relógio com ponteiros.", opcoes, horizontal=True, index=opcoes.index(dados_avaliacao.get("hab33", default_option)))
+    hab34 = st.radio("34. Reconhece horas não exatas (meia hora ou sete minutos, por exemplo) em relógio digital.", opcoes, horizontal=True, index=opcoes.index(dados_avaliacao.get("hab34", default_option)))
+    hab35 = st.radio("35. Reconhece horas não exatas em relógio com ponteiros.", opcoes, horizontal=True, index=opcoes.index(dados_avaliacao.get("hab35", default_option)))
+    hab36 = st.radio("36. Associa horários aos acontecimentos.", opcoes, horizontal=True, index=opcoes.index(dados_avaliacao.get("hab36", default_option)))
+    hab37 = st.radio("37. Reconhece as medidas de tempo (ano, hora, minuto, dia, semana etc.).", opcoes, horizontal=True, index=opcoes.index(dados_avaliacao.get("hab37", default_option)))
+    hab38 = st.radio("38. Compreende conceitos matemáticos, como dobro e metade.", opcoes, horizontal=True, index=opcoes.index(dados_avaliacao.get("hab38", default_option)))
+    hab39 = st.radio("39. Resolve operações matemáticas (adição ou subtração) com apoio de material concreto.", opcoes, horizontal=True, index=opcoes.index(dados_avaliacao.get("hab39", default_option)))
+    hab40 = st.radio("40. Resolve operações matemáticas (adição ou subtração) sem apoio de material concreto.", opcoes, horizontal=True, index=opcoes.index(dados_avaliacao.get("hab40", default_option)))
+    hab41 = st.radio("41. Demonstra curiosidade. Pergunta sobre o funcionamento das coisas.", opcoes, horizontal=True, index=opcoes.index(dados_avaliacao.get("hab41", default_option)))
+    hab42 = st.radio("42. Gosta de jogos envolvendo lógica, como quebra-cabeças e charadas, entre outros.", opcoes, horizontal=True, index=opcoes.index(dados_avaliacao.get("hab42", default_option)))
+    hab43 = st.radio("43. Organiza figuras em ordem lógica.", opcoes, horizontal=True, index=opcoes.index(dados_avaliacao.get("hab43", default_option)))
+    st.markdown("---")
+
+    # --- HABILIDADES DE INFORMÁTICA ---
+    st.subheader("Informática na escola")
+    hab44 = st.radio("44. Usa o computador com relativa autonomia (liga, desliga, acessa arquivos e programas).", opcoes, horizontal=True, index=opcoes.index(dados_avaliacao.get("hab44", default_option)))
+    hab45 = st.radio("45. Sabe usar o computador e a internet quando disponibilizados na escola.", opcoes, horizontal=True, index=opcoes.index(dados_avaliacao.get("hab45", default_option)))
+    st.markdown("---")
+
+    # --- SEÇÃO ACADÊMICO ---
+    st.subheader("ACADÊMICO")
+    portugues_acad = st.text_area("Português", value=dados_avaliacao.get("portugues_acad", ""))
+    matematica_acad = st.text_area("Matemática", value=dados_avaliacao.get("matematica_acad", ""))
+    ciencias_acad = st.text_area("Ciências", value=dados_avaliacao.get("ciencias_acad", ""))
+    historia_acad = st.text_area("História", value=dados_avaliacao.get("historia_acad", ""))
+    geografia_acad = st.text_area("Geografia", value=dados_avaliacao.get("geografia_acad", ""))
+    artes_acad = st.text_area("Artes", value=dados_avaliacao.get("artes_acad", ""))
+    ingles_acad = st.text_area("Inglês", value=dados_avaliacao.get("ingles_acad", ""))
+    ed_fisica_acad = st.text_area("Educação Física", value=dados_avaliacao.get("ed_fisica_acad", ""))
+    st.markdown("---")
+
+    # --- SEÇÃO OBJETIVOS GERAIS ---
+    st.subheader("OBJETIVOS GERAIS")
+    obj1 = st.text_area("1)", value=dados_avaliacao.get("obj1", ""), key="obj1")
+    obj2 = st.text_area("2)", value=dados_avaliacao.get("obj2", ""), key="obj2")
+    obj3 = st.text_area("3)", value=dados_avaliacao.get("obj3", ""), key="obj3")
+    st.markdown("---")
+
+    # --- SEÇÃO ADAPTAÇÕES GERAIS ---
+    st.subheader("ADAPTAÇÕES GERAIS ACADÊMICAS")
+    col1, col2 = st.columns(2)
+    with col1:
+        adapt_conteudo = st.text_area("Adaptações de conteúdo em sala", value=dados_avaliacao.get("adapt_conteudo", ""))
+    with col2:
+        adapt_avaliacoes = st.text_area("Adaptações em avaliações", value=dados_avaliacao.get("adapt_avaliacoes", ""))
+
+    # --- BOTÃO DE SUBMISSÃO ---
+    submitted = st.form_submit_button("Salvar Avaliação de Habilidades")
+    if submitted:
+        novos_dados_avaliacao = {
+            "hab1": hab1, "hab2": hab2, "hab3": hab3, "hab4": hab4, "hab5": hab5, "hab6": hab6, "hab7": hab7, "hab8": hab8, "hab9": hab9, "hab10": hab10,
+            "hab11": hab11, "hab12": hab12, "hab13": hab13, "hab14": hab14, "hab15": hab15, "hab16": hab16, "hab17": hab17, "hab18": hab18, "hab19": hab19, "hab20": hab20,
+            "hab21": hab21, "hab22": hab22, "hab23": hab23, "hab24": hab24, "hab25": hab25, "hab26": hab26, "hab27": hab27, "hab28": hab28, "hab29": hab29, "hab30": hab30,
+            "hab31": hab31, "hab32": hab32, "hab33": hab33, "hab34": hab34, "hab35": hab35, "hab36": hab36, "hab37": hab37, "hab38": hab38, "hab39": hab39, "hab40": hab40,
+            "hab41": hab41, "hab42": hab42, "hab43": hab43, "hab44": hab44, "hab45": hab45,
+            "portugues_acad": portugues_acad, "matematica_acad": matematica_acad, "ciencias_acad": ciencias_acad, "historia_acad": historia_acad,
+            "geografia_acad": geografia_acad, "artes_acad": artes_acad, "ingles_acad": ingles_acad, "ed_fisica_acad": ed_fisica_acad,
+            "obj1": obj1, "obj2": obj2, "obj3": obj3,
+            "adapt_conteudo": adapt_conteudo, "adapt_avaliacoes": adapt_avaliacoes
+        }
+        salvar_dados_aprendiz(st.session_state.nome_aprendiz_ativo, novos_dados_avaliacao, "avaliacao")
+        st.success(f"Avaliação de '{st.session_state.nome_aprendiz_ativo}' salva com sucesso!")
+        
+        if "avaliacao" not in st.session_state.aprendiz_ativo:
+            st.session_state.aprendiz_ativo["avaliacao"] = {}
+        st.session_state.aprendiz_ativo["avaliacao"].update(novos_dados_avaliacao)
