@@ -1,6 +1,6 @@
 # bncc_medio.py
-# Versão FINAL e COMPLETA com TODAS as competências e habilidades do Ensino Médio,
-# corrigida e validada a partir da contagem precisa dos arquivos fornecidos.
+# Versão FINAL e DEFINITIVA com TODAS as competências e as 30 habilidades validadas para a área de Linguagens,
+# além da lista completa para as outras áreas.
 
 MEDIO_DB = {
     "Linguagens e suas Tecnologias": {
@@ -36,13 +36,13 @@ MEDIO_DB = {
             {"codigo": "EM13LGG503", "descricao": "Vivenciar práticas corporais e significá-las em seu projeto de vida, como forma de autoconhecimento, autocuidado físico e emocional, e de lazer."},
             {"codigo": "EM13LGG601", "descricao": "Apropriar-se do patrimônio artístico de diferentes tempos e lugares, compreendendo a sua diversidade, bem como os processos de legitimação das manifestações artísticas na sociedade."},
             {"codigo": "EM13LGG602", "descricao": "Fruir e apreciar esteticamente diversas manifestações artísticas e culturais, das locais às mundiais, assim como delas participar, de modo a aguçar continuamente a sensibilidade, a imaginação e a criatividade."},
-            {"codigo": "EM13LGG603", "descricao": "Expressar-se e atuar em processos de criação autorais individuais e coletivos nas diferentes linguagens artísticas (artes visuais, audiovisual, dança, música e teatro) e nas intersecções entre elas."},
+            {"codigo": "EM13LGG603", "descricao": "Expressar-se e atuar em processos de criação autorais individuais e coletivos nas diferentes linguagens artísticas e nas intersecções entre elas, recorrendo a referências estéticas e culturais, conhecimentos de naturezas diversas e experiências individuais e coletivas."},
             {"codigo": "EM13LGG604", "descricao": "Relacionar as práticas artísticas às diferentes dimensões da vida social, cultural, política e econômica e identificar o processo de construção histórica dessas práticas."},
             {"codigo": "EM13LGG701", "descricao": "Explorar tecnologias digitais da informação e comunicação (TDIC), compreendendo seus princípios e funcionalidades, e utilizá-las de modo ético, criativo, responsável e adequado a práticas de linguagem em diferentes contextos."},
             {"codigo": "EM13LGG702", "descricao": "Avaliar o impacto das tecnologias digitais da informação e comunicação (TDIC) na formação do sujeito e em suas práticas sociais, para fazer uso crítico dessa mídia em práticas de seleção, compreensão e produção de discursos em ambiente digital."},
             {"codigo": "EM13LGG703", "descricao": "Utilizar diferentes linguagens, mídias e ferramentas digitais em processos de produção coletiva, colaborativa e projetos autorais em ambientes digitais."},
             {"codigo": "EM13LGG704", "descricao": "Apropriar-se criticamente de processos de pesquisa e busca de informação, por meio de ferramentas e dos novos formatos de produção e distribuição do conhecimento na cultura de rede."},
-            {"codigo": "EM13LP01", "descricao": "Relacionar o texto com suas condições de produção e seu contexto sócio-histórico de circulação (leitor/audiência previstos, objetivos, pontos de vista e perspectivas, papel social do autor, época, gênero do discurso etc.), de forma a ampliar as possibilidades de construção de sentidos e de análise crítica e produzir textos adequados a diferentes situações."},
+            {"codigo": "EM13LP01", "descricao": "Relacionar o texto com suas condições de produção e seu contexto sócio-histórico de circulação, de forma a ampliar as possibilidades de construção de sentidos e de análise crítica."},
             {"codigo": "EM13LP02", "descricao": "Estabelecer relações entre as partes do texto, tanto na produção como na leitura/escuta, considerando a construção composicional e o estilo do gênero."}
         ]
     },
@@ -124,7 +124,7 @@ MEDIO_DB = {
             {"codigo": "EM13CNT207", "descricao": "Identificar, analisar e discutir vulnerabilidades vinculadas às vivências e aos desafios contemporâneos aos quais as juventudes estão expostas."},
             {"codigo": "EM13CNT208", "descricao": "Aplicar os princípios da hereditariedade e da biologia molecular para analisar e prever características fenotípicas de seres vivos."},
             {"codigo": "EM13CNT209", "descricao": "Analisar a evolução dos seres vivos e as modificações nos ambientes, e as suas inter-relações."},
-            {"codigo": "EM13CNT301", "descricao": "Construir questões, elaborar hipóteses, previsões e estimativas, empregar instrumentos de medição e representar e interpretar modelos explicativos para investigar e analisar fenôomens naturais."},
+            {"codigo": "EM13CNT301", "descricao": "Construir questões, elaborar hipóteses, previsões e estimativas, empregar instrumentos de medição e representar e interpretar modelos explicativos para investigar e analisar fenômenos naturais."},
             {"codigo": "EM13CNT302", "descricao": "Comunicar, para públicos variados, em diversos contextos, resultados de análises, pesquisas e/ou experimentos."},
             {"codigo": "EM13CNT303", "descricao": "Interpretar textos de divulgação científica que tratem de temáticas das Ciências da Natureza, disponíveis em diferentes mídias."},
             {"codigo": "EM13CNT304", "descricao": "Analisar e debater o papel do conhecimento científico e tecnológico no combate a preconceitos, em diferentes contextos histórico-sociais."},
