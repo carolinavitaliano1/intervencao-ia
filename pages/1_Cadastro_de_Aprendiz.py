@@ -168,7 +168,21 @@ else:
         col2.metric("Comorbidades", dados_cadastro.get('comorbidades') or "Não informado")
 
     # ... (Adicione aqui os containers para visualizar TODAS as outras seções)
+# COLE ESTE BLOCO NO ARQUIVO 1_Cadastro_de_Aprendiz.py
+    with st.container(border=True):
+        st.subheader("Histórico de Planos de Ensino (PEIs)")
+        lista_peis = st.session_state.get("aprendiz_ativo", {}).get("peis", [])
 
+        if not lista_peis:
+            st.info("Nenhum PEI foi registrado para este aprendiz.")
+        else:
+            for pei in reversed(lista_peis):
+                data = pei.get("data_criacao", "Data não registrada")
+                disciplina = pei.get("disciplina", "Não informada")
+                with st.expander(f"**PEI de {disciplina} - Criado em: {data}**"):
+                    st.write(f"**Objetivos Gerais:** {pei.get('objetivos_gerais')}")
+                    st.write(f"**Códigos BNCC:** {pei.get('codigos_bncc')}")
+                    st.write("---")
     st.write("")
     col1, col2, col3 = st.columns([1,1.2,1])
     with col1:
