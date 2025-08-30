@@ -113,23 +113,84 @@ elif pagina_selecionada == "Cadastro de Aprendiz":
 
         # --- SEÇÃO DESENVOLVIMENTO E SAÚDE ---
         with st.expander("DESENVOLVIMENTO E SAÚDE"):
-            # ... (código dos campos desta seção)
-            pass # Adicione os campos aqui
+            col1, col2, col3 = st.columns(3)
+            with col1:
+                diagnostico = st.text_input("Diagnóstico:")
+            with col2:
+                comorbidades = st.text_input("Comorbidades:")
+            with col3:
+                data_diagnostico = st.date_input("Data do diagnóstico:")
+
+            terapias = st.text_area("Terapias:")
+
+            col1, col2 = st.columns(2)
+            with col1:
+                medico_responsavel = st.text_input("Médico responsável:")
+            with col2:
+                contato_medico = st.text_input("Contato:")
+
+            col1, col2, col3 = st.columns(3)
+            with col1:
+                medicacao_atual = st.text_input("Medicação atual:")
+            with col2:
+                horario_medicacao = st.text_input("Horário:")
+            with col3:
+                objetivo_medicacao = st.text_input("Objetivo:")
+
+            alergia = st.text_area("Alergia:")
+            alteracao_sensorial = st.text_area("Alteração sensorial:")
+            gatilhos_crises = st.text_area("Gatilhos para crises:")
+            outras_infos = st.text_area("Outras informações relevantes:")
 
         # --- SEÇÃO ESCOLA E EQUIPE ---
         with st.expander("ESCOLA E EQUIPE"):
-            # ... (código dos campos desta seção)
-            pass # Adicione os campos aqui
+            col1, col2 = st.columns(2)
+            with col1:
+                prof_principal = st.text_input("Professor Principal:")
+                acomp_escolar = st.text_input("Acompanhante escolar:")
+                coord_pedagogica = st.text_input("Coordenação Pedagógica:")
+                sala_recursos = st.text_input("Sala de recursos/AEE:")
+            with col2:
+                prof_especialistas = st.text_input("Professores Especialistas:")
+                acomp_terapeutico = st.text_input("Acompanhante terapêutico (clínica ou família):")
+                orient_pedagogica = st.text_input("Orientação Pedagógica:")
+                resp_sala_recursos = st.text_input("Responsável (Sala de recursos/AEE):")
 
         # --- SEÇÃO AUTONOMIA ---
         with st.expander("AUTONOMIA"):
-            # ... (código dos campos desta seção)
-            pass # Adicione os campos aqui
+            comunicacao = st.text_area("Comunicação:")
+            comunicacao_alt = st.radio("Utiliza comunicação alternativa?", ("Sim", "Não"), horizontal=True)
+
+            col1, col2, col3, col4 = st.columns(4)
+            with col1:
+                fica_sozinho = st.radio("Consegue ficar em sala de aula sozinho(a)?", ("Sim", "Não"))
+            with col2:
+                banheiro_sozinho = st.radio("Consegue utilizar o banheiro sozinho(a)?", ("Sim", "Não"))
+            with col3:
+                agua_sozinho = st.radio("Consegue beber água sozinho(a)?", ("Sim", "Não"))
+            with col4:
+                mobilidade_reduzida = st.radio("Possui mobilidade reduzida?", ("Sim", "Não"))
+            
+            tem_crises = st.radio("Costuma ter crises?", ("Sim", "Não", "Raramente"), horizontal=True)
+            col1, col2 = st.columns(2)
+            with col1:
+                principais_gatilhos = st.text_area("Principais gatilhos:")
+            with col2:
+                como_regula = st.text_area("Como se regula:")
         
-        # --- SEÇÃO AVALIAÇÃO ---
+        # --- SEÇÃO AVALIAÇÃO E POTENCIALIDADES ---
         with st.expander("AVALIAÇÃO E POTENCIALIDADES"):
-            # ... (código dos campos desta seção)
-            pass # Adicione os campos aqui
+            col1, col2 = st.columns(2)
+            with col1:
+                dificuldades = st.text_area("Principais Dificuldades (restrições):")
+            with col2:
+                potencialidades = st.text_area("Principais Potencialidades (o que gosta):")
+
+            aval_multi = st.radio("Possui avaliação da equipe multi?", ("Sim", "Não"), horizontal=True)
+            desenv_habil = st.radio("Precisa desenvolver habilidades básicas?", ("Sim", "Não"), horizontal=True)
+            adapt_materiais = st.radio("Possui necessidade de adaptação de materiais?", ("Sim", "Não"), horizontal=True)
+            adapt_curriculo = st.radio("Possui necessidade de adaptação de currículo?", ("Sim", "Não"), horizontal=True)
+            disciplinas_apoio = st.text_area("Disciplinas que necessita de maior apoio:")
         
         # Botão para salvar
         submitted = st.form_submit_button("Salvar Cadastro do Aprendiz")
@@ -137,24 +198,31 @@ elif pagina_selecionada == "Cadastro de Aprendiz":
             if not nome_aluno:
                 st.error("O campo 'Nome do aluno' é obrigatório para salvar!")
             else:
-                # Coleta todos os dados em um dicionário
                 dados_para_salvar = {
-                    "nome_aluno": nome_aluno,
-                    "principal_responsavel": principal_responsavel,
-                    "nome_escola": nome_escola,
-                    "data_pei": data_pei.strftime('%Y-%m-%d'),
-                    "tipo_documento": tipo_documento,
-                    "data_nascimento": data_nascimento.strftime('%Y-%m-%d'),
-                    "parentesco_responsavel": parentesco_responsavel,
-                    "ano_escolar": ano_escolar,
-                    "duracao_pei": duracao_pei,
-                    "elaborado_por": elaborado_por,
-                    "avaliacao_habilidades": avaliacao_habilidades,
-                    "relatorio_multidisciplinar": relatorio_multidisciplinar
-                    # Adicione aqui as outras variáveis dos outros campos para salvar
+                    # Dados do Estudante
+                    "nome_aluno": nome_aluno, "principal_responsavel": principal_responsavel, "nome_escola": nome_escola,
+                    "data_pei": data_pei.strftime('%Y-%m-%d'), "tipo_documento": tipo_documento, "data_nascimento": data_nascimento.strftime('%Y-%m-%d'),
+                    "parentesco_responsavel": parentesco_responsavel, "ano_escolar": ano_escolar, "duracao_pei": duracao_pei,
+                    "elaborado_por": elaborado_por, "avaliacao_habilidades": avaliacao_habilidades, "relatorio_multidisciplinar": relatorio_multidisciplinar,
+                    # Desenvolvimento e Saúde
+                    "diagnostico": diagnostico, "comorbidades": comorbidades, "data_diagnostico": data_diagnostico.strftime('%Y-%m-%d'),
+                    "terapias": terapias, "medico_responsavel": medico_responsavel, "contato_medico": contato_medico,
+                    "medicacao_atual": medicacao_atual, "horario_medicacao": horario_medicacao, "objetivo_medicacao": objetivo_medicacao,
+                    "alergia": alergia, "alteracao_sensorial": alteracao_sensorial, "gatilhos_crises": gatilhos_crises, "outras_infos": outras_infos,
+                    # Escola e Equipe
+                    "prof_principal": prof_principal, "acomp_escolar": acomp_escolar, "coord_pedagogica": coord_pedagogica,
+                    "sala_recursos": sala_recursos, "prof_especialistas": prof_especialistas, "acomp_terapeutico": acomp_terapeutico,
+                    "orient_pedagogica": orient_pedagogica, "resp_sala_recursos": resp_sala_recursos,
+                    # Autonomia
+                    "comunicacao": comunicacao, "comunicacao_alt": comunicacao_alt, "fica_sozinho": fica_sozinho,
+                    "banheiro_sozinho": banheiro_sozinho, "agua_sozinho": agua_sozinho, "mobilidade_reduzida": mobilidade_reduzida,
+                    "tem_crises": tem_crises, "principais_gatilhos": principais_gatilhos, "como_regula": como_regula,
+                    # Avaliação e Potencialidades
+                    "dificuldades": dificuldades, "potencialidades": potencialidades, "aval_multi": aval_multi,
+                    "desenv_habil": desenv_habil, "adapt_materiais": adapt_materiais, "adapt_curriculo": adapt_curriculo,
+                    "disciplinas_apoio": disciplinas_apoio
                 }
                 
-                # Salva os dados no arquivo
                 if salvar_dados(dados_para_salvar):
                     st.success(f"Aprendiz '{nome_aluno}' cadastrado com sucesso!")
                     st.balloons()
