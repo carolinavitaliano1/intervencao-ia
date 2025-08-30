@@ -233,22 +233,193 @@ elif pagina_selecionada == "Base de Conhecimento":
     st.info("Consulte definições e implicações práticas de conceitos-chave da neuropsicopedagogia.")
 
     with st.expander("🧠 O que são Funções Executivas?"):
-        st.markdown("""
-            Conforme explorado em **'Neurociência e Transtornos de Aprendizagem'**, as Funções Executivas são um conjunto de habilidades mentais que nos permitem controlar e autorregular nossos pensamentos, emoções e ações. Elas são como o "CEO" do nosso cérebro.
-            - **Principais componentes:** Memória de Trabalho, Controle Inibitório e Flexibilidade Cognitiva.
-            - **Implicação Prática:** Alunos com déficits nas F.E. podem ter dificuldade em iniciar tarefas, se organizar, controlar impulsos e adaptar-se a novas regras, mesmo que saibam o conteúdo.
-        """)
-    
-    with st.expander("🗣️ O que é Consciência Fonológica?"):
-        st.markdown("""
-            A consciência fonológica é a habilidade de perceber e manipular os sons da fala. É um pilar fundamental para a alfabetização, como destacado em diversos materiais sobre transtornos de aprendizagem.
-            - **Não envolve letras, apenas sons.** Inclui a capacidade de identificar rimas, sílabas e fonemas (os menores sons da fala).
-            - **Implicação Prática:** Dificuldades nesta área são um forte preditor de dislexia. A intervenção deve focar em jogos e atividades sonoras antes de focar intensamente na letra-som.
-        """)
+        st.markdown("""Roteiro 1 – Aula de Leitura Interativa
 
-    with st.expander("🔢 O que é Senso Numérico?"):
-        st.markdown("""
-            Mencionado em estudos sobre discalculia, o senso numérico é uma compreensão intuitiva dos números, sua magnitude e suas relações. É a base para todo o aprendizado matemático.
-            - **Envolve:** Estimar quantidades, comparar números (qual é maior?), entender que '5' é uma quantidade fixa de objetos.
-            - **Implicação Prática:** Crianças com baixo senso numérico precisam de muitas atividades com materiais concretos (blocos, fichas) para construir essa noção antes de avançar para cálculos abstratos.
+Objetivo: Desenvolver a compreensão leitora
+
+e estimular a imaginação.
+
+
+
+
+
+Ferramentas sugeridas: BookCreator, Wordwall (caça-palavras), Jamboard.
+
+
+
+
+
+Passo a passo:
+
+
+
+- Acolhida: roda de conversa com imagem relacionada ao tema do livro.
+
+
+
+- Apresentação: leitura compartilhada de trechos.
+
+
+
+- Desenvolvimento: caça-palavras online com vocabulário do texto.
+
+
+
+- Síntese: mural Jamboard com impressões da história.
+
+
+
+- Encerramento: desafio de recontar a história em 3 frases.
+
+🎵 Roteiro 2 – Aula de Música e Expressão
+
+Objetivo: Trabalhar ritmo, expressão
+
+corporal e memória.
+
+
+
+
+
+Ferramentas sugeridas: YouTube (vídeo musical), Kahoot, Baamboozle.
+
+
+
+
+
+Passo a passo:
+
+
+
+- Acolhida: aquecimento com palmas e gestos.
+
+
+
+- Apresentação: ouvir juntos uma música.
+
+
+
+- Desenvolvimento: jogo Kahoot com perguntas sobre a letra.
+
+
+
+- Síntese: improviso de sons com o corpo (batidas, palmas, estalos).
+
+
+
+- Encerramento: feedback coletivo e breve relaxamento.
+
+🔢 Roteiro 3 – Aula de Matemática Lúdica
+
+Objetivo: Estimular o raciocínio lógico e a
+
+resolução de problemas.
+
+
+
+
+
+Ferramentas sugeridas: Genially (escape room), Wordwall, Padlet.
+
+
+
+
+
+Passo a passo:
+
+
+
+- Acolhida: desafio rápido de cálculo mental.
+
+
+
+- Apresentação: explicar a missão do “Escape Room da Matemática”.
+
+
+
+- Desenvolvimento: resolver juntos os desafios no Genially.
+
+
+
+- Síntese: mural Padlet com estratégias usadas pelos alunos.
+
+
+
+- Encerramento: parabéns coletivo e entrega de crachás virtuais.
+
+🌍 Roteiro 4 – Aula de Ciências Investigativa
+
+Objetivo: Explorar conceitos de forma
+
+prática e investigativa.
+
+
+
+
+
+Ferramentas sugeridas: Science Kids, NASA Kids Club, Jamboard.
+
+
+
+
+
+Passo a passo:
+
+
+
+- Acolhida: mostrar uma imagem misteriosa relacionada ao tema.
+
+
+
+- Apresentação: levantar hipóteses sobre a imagem.
+
+
+
+- Desenvolvimento: uso de site educativo para explorar o conteúdo.
+
+
+
+- Síntese: mural colaborativo no Jamboard com descobertas.
+
+
+
+- Encerramento: elaborar juntos uma pergunta para próxima aula.
+
+💬 Roteiro 5 – Aula de Comunicação e Linguagem
+
+Objetivo: Desenvolver a oralidade,
+
+vocabulário e interação social.
+
+
+
+
+
+Ferramentas sugeridas: Pixton (quadrinhos), StoryboardThat, Kahoot.
+
+
+
+
+
+Passo a passo:
+
+
+
+- Acolhida: roda de perguntas rápidas (ex.: “qual sua comida favorita?”).
+
+
+
+- Apresentação: introdução ao tema (histórias em quadrinhos).
+
+
+
+- Desenvolvimento: criação coletiva de tirinha no Pixton.
+
+
+
+- Síntese: quiz Kahoot com vocabulário aprendido.
+
+
+
+- Encerramento: compartilhar a tirinha criada e dar feedback positivo. com base no material consegue criar mais roteiros ?
         """)
