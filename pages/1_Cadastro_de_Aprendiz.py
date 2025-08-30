@@ -11,7 +11,7 @@ if 'edit_mode' not in st.session_state:
 if not st.session_state.get("nome_aprendiz_ativo"):
     st.session_state.edit_mode = True
 
-# --- FUNÇÕES AUXILIARES ---
+# --- FUNÇÃO AUXILIAR PARA RADIO BUTTONS ---
 def get_radio_index(options_list, value):
     try:
         return options_list.index(value)
@@ -20,7 +20,10 @@ def get_radio_index(options_list, value):
 
 def calcular_idade(data_nascimento):
     if isinstance(data_nascimento, str):
-        data_nascimento = datetime.datetime.strptime(data_nascimento, '%Y-%m-%d').date()
+        try:
+            data_nascimento = datetime.datetime.strptime(data_nascimento, '%Y-%m-%d').date()
+        except ValueError:
+            return "Inválida"
     hoje = datetime.date.today()
     return hoje.year - data_nascimento.year - ((hoje.month, hoje.day) < (data_nascimento.month, data_nascimento.day))
 
@@ -45,26 +48,19 @@ if st.session_state.edit_mode:
                 st.text_input("Idade", value=f"{idade} anos", disabled=True)
                 grau_parentesco = st.text_input("Grau de parentesco do responsável", value=dados_cadastro.get("grau_parentesco", ""))
                 ano_escolar = st.text_input("Ano escolar", value=dados_cadastro.get("ano_escolar", ""))
-                tempo_escola = st.text_input("Estuda nessa escola há quanto tempo", value=dados_cadastro.get("tempo_escola", ""))
 
         with st.expander("DESENVOLVIMENTO E SAÚDE"):
-            col1, col2, col3 = st.columns(3)
+            col1, col2 = st.columns(2)
             with col1:
                 diagnostico = st.text_input("Diagnóstico", value=dados_cadastro.get("diagnostico", ""))
             with col2:
                 comorbidades = st.text_input("Comorbidades", value=dados_cadastro.get("comorbidades", ""))
-            with col3:
-                data_diag_str = dados_cadastro.get('data_diagnostico', datetime.date.today().strftime('%Y-%m-%d'))
-                data_diagnostico = st.date_input("Data do diagnóstico", value=datetime.datetime.strptime(data_diag_str, '%Y-%m-%d').date())
-            
             terapias = st.text_area("Terapias", value=dados_cadastro.get("terapias", ""))
-            
             col1, col2 = st.columns(2)
             with col1:
                 medico_responsavel = st.text_input("Médico responsável", value=dados_cadastro.get("medico_responsavel", ""))
             with col2:
                 contato_medico = st.text_input("Contato (Médico)", value=dados_cadastro.get("contato_medico", ""))
-            
             col1, col2, col3 = st.columns(3)
             with col1:
                 medicacao_atual = st.text_input("Medicação atual", value=dados_cadastro.get("medicacao_atual", ""))
@@ -72,7 +68,6 @@ if st.session_state.edit_mode:
                 horario_medicacao = st.text_input("Horário", value=dados_cadastro.get("horario_medicacao", ""))
             with col3:
                 objetivo_medicacao = st.text_input("Objetivo", value=dados_cadastro.get("objetivo_medicacao", ""))
-                
             alergia = st.text_area("Alergia", value=dados_cadastro.get("alergia", ""))
             alteracao_sensorial = st.text_area("Alteração sensorial", value=dados_cadastro.get("alteracao_sensorial", ""))
             gatilhos_crises = st.text_area("Gatilhos para crises", value=dados_cadastro.get("gatilhos_crises", ""))
@@ -82,11 +77,39 @@ if st.session_state.edit_mode:
             radio_opts_sim_nao = ["Sim", "Não"]
             comunicacao = st.text_area("Formas de Comunicação", value=dados_cadastro.get("comunicacao", ""))
             comunicacao_alt = st.radio("Utiliza comunicação alternativa?", radio_opts_sim_nao, horizontal=True, index=get_radio_index(radio_opts_sim_nao, dados_cadastro.get("comunicacao_alt")))
-            # ... (demais campos de autonomia)
+            col1, col2 = st.columns(2)
+            with col1:
+                fica_sozinho = st.radio("Consegue ficar em sala de aula sozinho(a)?", radio_opts_sim_nao, index=get_radio_index(radio_opts_sim_nao, dados_cadastro.get("fica_sozinho")))
+                usa_banheiro = st.radio("Consegue utilizar o banheiro sozinho(a)?", radio_opts_sim_nao, index=get_radio_index(radio_opts_sim_nao, dados_cadastro.get("usa_banheiro")))
+            with col2:
+                bebe_agua = st.radio("Consegue beber água sozinho(a)?", radio_opts_sim_nao, index=get_radio_index(radio_opts_sim_nao, dados_cadastro.get("bebe_agua")))
+                mobilidade_reduzida = st.radio("Possui mobilidade reduzida?", radio_opts_sim_nao, index=get_radio_index(radio_opts_sim_nao, dados_cadastro.get("mobilidade_reduzida")))
+            costuma_crises = st.radio("Costuma ter crises?", ["Sim", "Não", "Raramente"], horizontal=True, index=get_radio_index(["Sim", "Não", "Raramente"], dados_cadastro.get("costuma_crises")))
+            col1, col2 = st.columns(2)
+            with col1:
+                principais_gatilhos = st.text_area("Principais gatilhos", value=dados_cadastro.get("principais_gatilhos", ""))
+            with col2:
+                como_regula = st.text_area("Como se regula", value=dados_cadastro.get("como_regula", ""))
+        
+        with st.expander("GENERALIZAÇÃO E METAS DE AVDs (Atividades de Vida Diária)"):
+            st.info("Descreva as metas e os níveis de ajuda para AVDs, inspirado no modelo.")
+            avd_higiene = st.text_area("Metas e Estratégias para Higiene (Limpar-se, Escovar os dentes, etc.)", value=dados_cadastro.get("avd_higiene", ""))
+            avd_alimentacao = st.text_area("Metas e Estratégias para Alimentação (Lanchar com independência, etc.)", value=dados_cadastro.get("avd_alimentacao", ""))
 
         with st.expander("AVALIAÇÃO GERAL"):
-            # ... (campos de avaliação)
-            pass
+            col1, col2 = st.columns(2)
+            with col1:
+                dificuldades = st.text_area("Principais Dificuldades (restrições)", value=dados_cadastro.get("dificuldades", ""))
+            with col2:
+                potencialidades = st.text_area("Principais Potencialidades (o que gosta)", value=dados_cadastro.get("potencialidades", ""))
+            st.markdown("---")
+            radio_opts_sim_nao = ["Sim", "Não"]
+            aval_multi = st.radio("Possui avaliação da equipe multi?", radio_opts_sim_nao, horizontal=True, index=get_radio_index(radio_opts_sim_nao, dados_cadastro.get("aval_multi")))
+            dev_habilidades = st.radio("Precisa desenvolver habilidades básicas?", radio_opts_sim_nao, horizontal=True, index=get_radio_index(radio_opts_sim_nao, dados_cadastro.get("dev_habilidades")))
+            adapt_materiais = st.radio("Possui necessidade de adaptação de materiais?", radio_opts_sim_nao, horizontal=True, index=get_radio_index(radio_opts_sim_nao, dados_cadastro.get("adapt_materiais")))
+            adapt_curriculo = st.radio("Possui necessidade de adaptação de currículo?", radio_opts_sim_nao, horizontal=True, index=get_radio_index(radio_opts_sim_nao, dados_cadastro.get("adapt_curriculo")))
+            disciplinas_apoio = st.text_area("Disciplinas que necessita de maior apoio", value=dados_cadastro.get("disciplinas_apoio", ""))
+            anexos = st.file_uploader("Enviar anexos de avaliação anterior", accept_multiple_files=True)
 
         col_submit, col_cancel = st.columns(2)
         with col_submit:
@@ -101,14 +124,16 @@ if st.session_state.edit_mode:
                 st.error("O nome do aluno é obrigatório!")
             else:
                 novos_dados_cadastro = {
-                    "data_nascimento": data_nascimento.strftime('%Y-%m-%d'), "principal_responsavel": principal_responsavel,
-                    "grau_parentesco": grau_parentesco, "nome_escola": nome_escola, "ano_escolar": ano_escolar, "tempo_escola": tempo_escola,
-                    "diagnostico": diagnostico, "comorbidades": comorbidades, "data_diagnostico": data_diagnostico.strftime('%Y-%m-%d'),
-                    "terapias": terapias, "medico_responsavel": medico_responsavel, "contato_medico": contato_medico,
-                    "medicacao_atual": medicacao_atual, "horario_medicacao": horario_medicacao, "objetivo_medicacao": objetivo_medicacao,
+                    "data_nascimento": data_nascimento.strftime('%Y-%m-%d'), "principal_responsavel": principal_responsavel, "grau_parentesco": grau_parentesco,
+                    "nome_escola": nome_escola, "ano_escolar": ano_escolar,
+                    "diagnostico": diagnostico, "comorbidades": comorbidades, "terapias": terapias, "medico_responsavel": medico_responsavel,
+                    "contato_medico": contato_medico, "medicacao_atual": medicacao_atual, "horario_medicacao": horario_medicacao, "objetivo_medicacao": objetivo_medicacao,
                     "alergia": alergia, "alteracao_sensorial": alteracao_sensorial, "gatilhos_crises": gatilhos_crises, "outras_infos_saude": outras_infos_saude,
-                    "comunicacao": comunicacao, "comunicacao_alt": comunicacao_alt,
-                    # ... inclua aqui todas as outras variáveis do formulário para salvar
+                    "comunicacao": comunicacao, "comunicacao_alt": comunicacao_alt, "fica_sozinho": fica_sozinho, "usa_banheiro": usa_banheiro,
+                    "bebe_agua": bebe_agua, "mobilidade_reduzida": mobilidade_reduzida, "costuma_crises": costuma_crises, "principais_gatilhos": principais_gatilhos,
+                    "como_regula": como_regula, "avd_higiene": avd_higiene, "avd_alimentacao": avd_alimentacao,
+                    "dificuldades": dificuldades, "potencialidades": potencialidades, "aval_multi": aval_multi, "dev_habilidades": dev_habilidades,
+                    "adapt_materiais": adapt_materiais, "adapt_curriculo": adapt_curriculo, "disciplinas_apoio": disciplinas_apoio,
                 }
                 salvar_dados_cadastro(nome_aluno, novos_dados_cadastro)
                 st.session_state.nome_aprendiz_ativo = nome_aluno
@@ -125,22 +150,38 @@ else:
         st.subheader("Dados do Estudante")
         col1, col2, col3 = st.columns(3)
         data_nasc_str = dados_cadastro.get('data_nascimento')
+        idade = "N/A"
         if data_nasc_str:
             idade = calcular_idade(data_nasc_str)
-            col1.metric("Idade", f"{idade} anos")
             col2.metric("Data de Nasc.", datetime.datetime.strptime(data_nasc_str, '%Y-%m-%d').strftime("%d/%m/%Y"))
         else:
-            col1.metric("Idade", "N/A")
             col2.metric("Data de Nasc.", "N/A")
         
+        col1.metric("Idade", f"{idade} anos" if isinstance(idade, int) else "N/A")
         col3.metric("Ano Escolar", dados_cadastro.get('ano_escolar') or "Não informado")
+        col1, col2 = st.columns(2)
+        col1.metric("Responsável", dados_cadastro.get('principal_responsavel') or "Não informado")
+        col2.metric("Escola", dados_cadastro.get('nome_escola') or "Não informado")
 
     with st.container(border=True):
-        st.subheader("Desenvolvimento e Saúde")
-        # ... Adicione aqui a visualização para os campos restaurados
-    
-    # ... Adicione o container de visualização para a seção AUTONOMIA
+        st.subheader("Generalização e Metas de AVDs")
+        st.write("**Metas para Higiene:**")
+        st.info(dados_cadastro.get('avd_higiene') or "Nenhuma meta definida.")
+        st.write("**Metas para Alimentação:**")
+        st.info(dados_cadastro.get('avd_alimentacao') or "Nenhuma meta definida.")
 
+    with st.container(border=True):
+        st.subheader("Avaliação Geral")
+        col1, col2 = st.columns(2)
+        with col1:
+            st.write("**Principais Dificuldades:**")
+            st.warning(dados_cadastro.get('dificuldades') or "Nenhuma informação.")
+        with col2:
+            st.write("**Principais Potencialidades:**")
+            st.success(dados_cadastro.get('potencialidades') or "Nenhuma informação.")
+        st.write(f"**Possui avaliação da equipe multi?** {dados_cadastro.get('aval_multi') or 'Não informado'}")
+        st.write(f"**Necessita de adaptação de materiais?** {dados_cadastro.get('adapt_materiais') or 'Não informado'}")
+    
     st.write("")
     col1, col2, col3 = st.columns([1,1.2,1])
     with col1:
