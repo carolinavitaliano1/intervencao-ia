@@ -22,7 +22,6 @@ def criar_prompt_pei(dados_aprendiz):
     ultima_avaliacao = avaliacoes[-1]
     resumo_pontos_apoio = []
     
-    # Simples mapeamento para tornar o prompt mais legível para a IA
     habilidades_map = { "hab5": "Conhecer as letras do alfabeto", "hab7": "Dominar sílabas simples", "hab22": "Solucionar problemas simples" }
 
     for i in range(1, 46):
@@ -61,13 +60,15 @@ st.info(f"Criando um novo PEI para: **{st.session_state.nome_aprendiz_ativo}**")
 peis_anteriores = st.session_state.get("aprendiz_ativo", {}).get("peis", [])
 dados_base = peis_anteriores[-1] if peis_anteriores else {}
 
+# NOVO AVISO ADICIONADO AQUI
+st.info("As sugestões da IA são geradas com base na **avaliação de habilidades mais recente** do aprendiz. Certifique-se de que a avaliação está preenchida e salva antes de usar esta função.")
+
 if st.button("🤖 Gerar Sugestões com IA"):
     prompt, erro = criar_prompt_pei(st.session_state.get("aprendiz_ativo", {}))
     if erro:
         st.error(erro)
     else:
         with st.spinner("Aguarde, a IA está analisando a avaliação e gerando sugestões..."):
-            # Simulação da resposta da IA
             st.session_state.objetivos_gerados = "1. Desenvolver a autonomia na leitura de palavras simples.\n2. Aprimorar o raciocínio lógico para resolução de problemas matemáticos básicos."
             st.session_state.adapt_sala_gerados = "1. Utilizar material dourado e ábaco nas aulas de matemática.\n2. Apresentar instruções em etapas (uma de cada vez).\n3. Oferecer textos com letras maiores e espaçamento duplo."
             st.session_state.adapt_avaliacoes_gerados = "1. Permitir tempo extra para a conclusão das provas.\n2. Ler os enunciados das questões em voz alta para o aluno.\n3. Permitir o uso de uma tabuada de apoio durante as avaliações de matemática."
@@ -113,7 +114,6 @@ with st.form("form_pei"):
         }
         adicionar_novo_pei(st.session_state.nome_aprendiz_ativo, novo_pei)
         
-        # Limpa os campos gerados pela IA da sessão para não persistirem
         if 'objetivos_gerados' in st.session_state: del st.session_state.objetivos_gerados
         if 'adapt_sala_gerados' in st.session_state: del st.session_state.adapt_sala_gerados
         if 'adapt_avaliacoes_gerados' in st.session_state: del st.session_state.adapt_avaliacoes_gerados
