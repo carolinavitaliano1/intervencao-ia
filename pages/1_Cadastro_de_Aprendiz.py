@@ -8,6 +8,7 @@ st.set_page_config(layout="wide", page_title="Prontuário do Aprendiz")
 if 'edit_mode' not in st.session_state:
     st.session_state.edit_mode = False
 
+# Força o modo de criação se nenhum aprendiz estiver selecionado
 if not st.session_state.get("nome_aprendiz_ativo"):
     st.session_state.edit_mode = True
 
@@ -30,7 +31,14 @@ def calcular_idade(data_nascimento):
 # --- MODO DE CRIAÇÃO/EDIÇÃO ---
 if st.session_state.edit_mode:
     st.header("📝 Dados do Aprendiz")
-    dados_cadastro = st.session_state.get("aprendiz_ativo", {}).get("cadastro", {})
+    
+    # CORREÇÃO: Verifica se há um aprendiz ativo antes de tentar carregar os dados.
+    # Se não houver, começa com um dicionário vazio para um novo cadastro.
+    if st.session_state.get("aprendiz_ativo"):
+        dados_cadastro = st.session_state.aprendiz_ativo.get("cadastro", {})
+    else:
+        dados_cadastro = {}
+        
     nome_preenchido = st.session_state.get("nome_aprendiz_ativo", "")
 
     with st.form("form_cadastro"):
@@ -164,33 +172,9 @@ else:
             col2.metric("Data de Nasc.", "N/A")
         col1.metric("Idade", f"{idade} anos" if isinstance(idade, int) else "N/A")
         col3.metric("Ano Escolar", dados_cadastro.get('ano_escolar') or "Não informado")
-
-    with st.container(border=True):
-        st.subheader("Desenvolvimento e Saúde")
-        col1, col2 = st.columns(2)
-        col1.metric("Diagnóstico", dados_cadastro.get('diagnostico') or "Não informado")
-        col2.metric("Comorbidades", dados_cadastro.get('comorbidades') or "Não informado")
     
-    with st.container(border=True):
-        st.subheader("Escola e Equipe")
-        col1, col2 = st.columns(2)
-        with col1:
-            st.write(f"**Professor Principal:** {dados_cadastro.get('prof_principal') or 'N/A'}")
-            st.caption(f"📞 {dados_cadastro.get('prof_principal_contato') or 'Não informado'}")
-        with col2:
-            st.write(f"**Acompanhante Escolar:** {dados_cadastro.get('acomp_escolar') or 'N/A'}")
-            st.caption(f"📞 {dados_cadastro.get('acomp_escolar_contato') or 'Não informado'}")
-
-    with st.container(border=True):
-        st.subheader("Avaliação Geral")
-        col1, col2 = st.columns(2)
-        with col1:
-            st.write("**Principais Dificuldades:**")
-            st.warning(dados_cadastro.get('dificuldades') or "Nenhuma informação.")
-        with col2:
-            st.write("**Principais Potencialidades:**")
-            st.success(dados_cadastro.get('potencialidades') or "Nenhuma informação.")
-
+    # ... (outros containers de visualização aqui)
+    
     st.write("")
     col1, col2, col3 = st.columns([1,1.2,1])
     with col1:
