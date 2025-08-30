@@ -27,7 +27,7 @@ estrategias_por_funcao = {
     "Controle Inibitório": ["Utilizar sinais visuais ou verbais combinados para 'Pare e Pense' antes de responder.", "Praticar jogos que exigem espera e troca de turno (ex: jogos de tabuleiro, 'estátua').", "Estabelecer rotinas claras e previsíveis com quadros de rotina visuais.", "Antecipar mudanças na rotina para diminuir a impulsividade e a ansiedade."],
     "Flexibilidade Cognitiva": ["Jogos que exigem mudança de regras no meio da partida (ex: 'Uno' com regras inventadas).", "Apresentar o mesmo problema com diferentes formas de resolução.", "Criar histórias com finais alternativos.", "Incentivar o 'brainstorming' de ideias sem julgamento inicial."],
     "Processamento Fonológico": ["Atividades lúdicas com rimas, aliterações e segmentação de sílabas/fonemas.", "Utilizar o método fônico multissensorial (letras texturizadas, traçado no ar/areia).", "Jogos de 'bingo de sons' ou 'qual palavra começa com o som /f/?'.", "Uso de softwares e aplicativos focados em consciência fonológica."],
-    "Processamento Visoespacial": ["Utilizar papel quadriculado para alinhar números e letras.", "Montagem de quebra-cabeças e LEGO seguindo modelos.", "Jogos de labirinto e 'encontre os 7 erros'.", "Destacar linhas ou usar réguas de leitura para evitar pular linhas durante a leitura."]
+    "Processamento Visoespacial": ["Utilizar papel quadriculado para alinhar números e letras.", "Montagem de quebra--cabeças e LEGO seguindo modelos.", "Jogos de labirinto e 'encontre os 7 erros'.", "Destacar linhas ou usar réguas de leitura para evitar pular linhas durante a leitura."]
 }
 
 
@@ -73,6 +73,8 @@ elif pagina_selecionada == "Plano de Ensino Individualizado (PEI)":
         )
 
         resultados = []
+        keywords_input = ""
+        competencias = []
 
         if etapa_ensino == "Educação Infantil":
             grupo_etario = st.selectbox("2. Selecione o Grupo Etário:", options=list(BNCC_DATABASE["Educação Infantil"].keys()))
@@ -96,7 +98,6 @@ elif pagina_selecionada == "Plano de Ensino Individualizado (PEI)":
             keywords_input = st.text_input("Filtrar por palavras-chave (separadas por vírgula):", placeholder="Ex: discursos, mídias, análise")
 
             if st.button("Buscar Competências e Habilidades"):
-                # No Ensino Médio, a busca se aplica apenas às habilidades.
                 resultados = BNCC_DATABASE["Ensino Médio"][area_conhecimento].get("Habilidades", [])
                 competencias = BNCC_DATABASE["Ensino Médio"][area_conhecimento].get("Competências Específicas", [])
                 
@@ -135,7 +136,6 @@ elif pagina_selecionada == "Plano de Ensino Individualizado (PEI)":
 # --- O RESTANTE DO CÓDIGO PARA AS OUTRAS PÁGINAS CONTINUA O MESMO ---
 elif pagina_selecionada == "Anamnese Aprofundada":
     st.header("👤 Anamnese Aprofundada")
-    st.info("Colete e organize dados essenciais para uma intervenção precisa.")
     with st.form("form_anamnese_avancado"):
         st.text_input("Nome Completo do Aluno")
         with st.expander("Dados de Identificação e Histórico"):
