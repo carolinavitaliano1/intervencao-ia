@@ -1,5 +1,6 @@
 import streamlit as st
 from database_utils import carregar_dados
+from streamlit_extras.switch_page_button import switch_page
 
 st.set_page_config(
     layout="wide",
@@ -16,28 +17,34 @@ if 'aprendiz_ativo' not in st.session_state:
 with st.sidebar:
     st.title("🧠 INTERVENÇÃO IA")
     
+    # Botão para iniciar um novo cadastro
+    if st.button("➕ Cadastrar Novo Aprendiz"):
+        st.session_state.aprendiz_ativo = None
+        st.session_state.nome_aprendiz_ativo = None
+        switch_page("Cadastro de Aprendiz")
+
+    st.markdown("---")
+    
     aprendizes_cadastrados = carregar_dados()
-    lista_nomes = ["-- Novo Cadastro --"] + list(aprendizes_cadastrados.keys())
+    lista_nomes = [""] + list(aprendizes_cadastrados.keys())
     
     index = 0
     if st.session_state.get("nome_aprendiz_ativo") in lista_nomes:
         index = lista_nomes.index(st.session_state.nome_aprendiz_ativo)
 
     aprendiz_selecionado = st.selectbox(
-        "Selecione o Aprendiz:",
+        "Selecione um Aprendiz:",
         options=lista_nomes,
         index=index,
-        key="seletor_principal"
+        key="seletor_principal",
+        label_visibility="collapsed",
+        placeholder="Selecione um Aprendiz"
     )
 
-    if aprendiz_selecionado != "-- Novo Cadastro --":
-        if st.session_state.get("nome_aprendiz_ativo") != aprendiz_selecionado:
-            st.session_state.aprendiz_ativo = aprendizes_cadastrados[aprendiz_selecionado]
-            st.session_state.nome_aprendiz_ativo = aprendiz_selecionado
-            st.rerun()
-    else:
-        st.session_state.aprendiz_ativo = None
-        st.session_state.nome_aprendiz_ativo = None
+    if aprendiz_selecionado and st.session_state.get("nome_aprendiz_ativo") != aprendiz_selecionado:
+        st.session_state.aprendiz_ativo = aprendizes_cadastrados[aprendiz_selecionado]
+        st.session_state.nome_aprendiz_ativo = aprendiz_selecionado
+        st.rerun()
         
     st.sidebar.markdown("---")
     st.info("Navegue pelas páginas ao lado para gerenciar o aprendiz selecionado.")
@@ -50,12 +57,12 @@ st.markdown("---")
 if st.session_state.get("nome_aprendiz_ativo"):
     st.success(f"**Aprendiz selecionado:** {st.session_state.nome_aprendiz_ativo}")
 else:
-    st.warning("Nenhum aprendiz selecionado. Selecione um na barra lateral ou cadastre um novo na página 'Cadastro de Aprendiz'.")
+    st.warning("Nenhum aprendiz selecionado. Clique em 'Cadastrar Novo Aprendiz' ou selecione um na lista.")
 
 st.markdown("""
 ### Como usar:
-1.  **Selecione um Aprendiz** na caixa de seleção na barra lateral. Para criar um novo, deixe a opção `-- Novo Cadastro --`.
-2.  Navegue para a página **Cadastro de Aprendiz** para inserir ou editar as informações cadastrais.
-3.  Vá para **Avaliação de Habilidades** para preencher o formulário de avaliação detalhado.
-4.  Use o **Plano de Ensino Individualizado (PEI)** para definir metas e estratégias baseadas na BNCC.
+1.  **Cadastre um Novo Aprendiz** ou **Selecione um existente** na barra lateral.
+2.  Navegue para a página **Cadastro de Aprendiz** para ver o prontuário.
+3.  Vá para **Avaliação de Habilidades** para registrar uma nova avaliação detalhada.
+4.  Use o **Plano de Ensino Individualizado (PEI)** para definir metas e estratégias.
 """)
