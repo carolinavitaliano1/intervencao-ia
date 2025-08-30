@@ -1,5 +1,6 @@
 # app.py
 import streamlit as st
+import datetime
 
 # --- IMPORTAÇÃO DOS DADOS MODULARIZADOS ---
 from bncc_infantil import INFANTIL_DB
@@ -35,7 +36,6 @@ estrategias_por_funcao = {
 with st.sidebar:
     st.title("🧠 INTERVENÇÃO IA")
     st.caption("Versão Final e Organizada")
-    # --- MODIFICAÇÃO 1: Itens removidos da lista de navegação ---
     pagina_selecionada = st.radio(
         "Navegue pelos Módulos:",
         ["Página Inicial", "Anamnese Aprofundada", "Plano de Ensino Individualizado (PEI)", "Gerador de Atividades Adaptadas"],
@@ -58,6 +58,114 @@ if pagina_selecionada == "Página Inicial":
         - **PEI com Inteligência Clínica:** Navegue pela BNCC completa e use a busca aprimorada por palavras-chave.
         - **Gerador de Atividades Adaptadas:** Crie materiais acessíveis com base nos princípios do DUA.
     """)
+
+elif pagina_selecionada == "Anamnese Aprofundada":
+    st.header("👤 Anamnese Aprofundada")
+
+    # --- SEÇÃO DADOS DO ESTUDANTE ---
+    with st.expander("DADOS DO ESTUDANTE", expanded=True): # [cite: 1]
+        col1, col2 = st.columns(2)
+        with col1:
+            st.text_input("Nome do aluno:")
+            st.text_input("Principal responsável:")
+            st.text_input("Nome da escola:")
+            st.date_input("Data da elaboração do PEI:")
+            st.text_input("Tipo de documento:")
+        with col2:
+            st.date_input("Data de Nascimento:", min_value=datetime.date(1990, 1, 1))
+            st.text_input("Grau de parentesco do responsável:")
+            st.text_input("Ano escolar:", value="5º")
+            st.text_input("Duração do PEI:")
+            st.text_input("Elaborado por:")
+
+        st.text_area("Avaliação das habilidades:")
+        st.text_area("Relatório da equipe multidisciplinar:")
+
+
+    # --- SEÇÃO DESENVOLVIMENTO E SAÚDE ---
+    with st.expander("DESENVOLVIMENTO E SAÚDE"): # [cite: 3]
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            st.text_input("Diagnóstico:")
+        with col2:
+            st.text_input("Comorbidades:")
+        with col3:
+            st.date_input("Data do diagnóstico:")
+
+        st.text_area("Terapias:")
+
+        col1, col2 = st.columns(2)
+        with col1:
+            st.text_input("Médico responsável:")
+        with col2:
+            st.text_input("Contato:")
+
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            st.text_input("Medicação atual:")
+        with col2:
+            st.text_input("Horário:")
+        with col3:
+            st.text_input("Objetivo:")
+
+        st.text_area("Alergia:")
+        st.text_area("Alteração sensorial:")
+        st.text_area("Gatilhos para crises:")
+        st.text_area("Outras informações relevantes:")
+
+    # --- SEÇÃO ESCOLA E EQUIPE ---
+    with st.expander("ESCOLA E EQUIPE"): # [cite: 5]
+        col1, col2 = st.columns(2)
+        with col1:
+            st.text_input("Professor Principal:")
+            st.text_input("Acompanhante escolar:")
+            st.text_input("Coordenação Pedagógica:")
+            st.text_input("Sala de recursos/AEE:")
+        with col2:
+            st.text_input("Professores Especialistas:")
+            st.text_input("Acompanhante terapêutico (clínica ou família):")
+            st.text_input("Orientação Pedagógica:")
+            st.text_input("Responsável (Sala de recursos/AEE):")
+
+    # --- SEÇÃO AUTONOMIA ---
+    with st.expander("AUTONOMIA"): # [cite: 7]
+        st.text_area("Comunicação:")
+        st.radio("Utiliza comunicação alternativa?", ("Sim", "Não"), horizontal=True)
+
+        col1, col2, col3, col4 = st.columns(4)
+        with col1:
+            st.radio("Consegue ficar em sala de aula sozinho(a)?", ("Sim", "Não"))
+        with col2:
+            st.radio("Consegue utilizar o banheiro sozinho(a)?", ("Sim", "Não"))
+        with col3:
+            st.radio("Consegue beber água sozinho(a)?", ("Sim", "Não"))
+        with col4:
+            st.radio("Possui mobilidade reduzida?", ("Sim", "Não"))
+        
+        st.radio("Costuma ter crises?", ("Sim", "Não", "Raramente"), horizontal=True)
+        col1, col2 = st.columns(2)
+        with col1:
+            st.text_area("Principais gatilhos:")
+        with col2:
+            st.text_area("Como se regula:")
+    
+    # --- SEÇÃO AVALIAÇÃO ---
+    with st.expander("AVALIAÇÃO E POTENCIALIDADES"): # [cite: 12]
+        col1, col2 = st.columns(2)
+        with col1:
+            st.text_area("Principais Dificuldades (restrições):")
+        with col2:
+            st.text_area("Principais Potencialidades (o que gosta):")
+
+        st.radio("Possui avaliação da equipe multi?", ("Sim", "Não"), horizontal=True) # [cite: 13]
+        st.radio("Precisa desenvolver habilidades básicas?", ("Sim", "Não"), horizontal=True) # [cite: 13]
+        st.radio("Possui necessidade de adaptação de materiais?", ("Sim", "Não"), horizontal=True) # [cite: 13]
+        st.radio("Possui necessidade de adaptação de currículo?", ("Sim", "Não"), horizontal=True) # [cite: 13]
+
+        st.text_area("Disciplinas que necessita de maior apoio:") # [cite: 13]
+        
+        st.file_uploader("Enviar anexos de avaliação anterior:", accept_multiple_files=True) # 
+
 
 elif pagina_selecionada == "Plano de Ensino Individualizado (PEI)":
     st.header("📝 Plano de Ensino Individualizado (PEI)")
@@ -138,11 +246,6 @@ elif pagina_selecionada == "Plano de Ensino Individualizado (PEI)":
             for estrategia in estrategias_por_funcao[funcao_selecionada]:
                 st.markdown(f"- {estrategia}")
 
-elif pagina_selecionada == "Anamnese Aprofundada":
-    st.header("👤 Anamnese Aprofundada")
-    # ... (código mantido)
 elif pagina_selecionada == "Gerador de Atividades Adaptadas":
     st.header("🎨 Gerador de Atividades Adaptadas (Avançado)")
     # ... (código mantido)
-
-# --- MODIFICAÇÃO 2: Blocos 'elif' para "Modelo RTI" e "Base de Conhecimento" foram removidos ---
