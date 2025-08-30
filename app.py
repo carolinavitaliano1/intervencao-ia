@@ -16,7 +16,7 @@ BNCC_DATABASE = {
 # --- CONFIGURAÇÃO DA PÁGINA ---
 st.set_page_config(
     layout="wide",
-    page_title="INTERVENÇÃO IA 5.0",
+    page_title="INTERVENÇÃO IA 6.0",
     page_icon="🧠"
 )
 
@@ -33,8 +33,8 @@ estrategias_por_funcao = {
 
 # --- MENU LATERAL DE NAVEGAÇÃO ---
 with st.sidebar:
-    st.title("🧠 INTERVENÇÃO IA 5.0")
-    st.caption("Versão Modular")
+    st.title("🧠 INTERVENÇÃO IA 6.0")
+    st.caption("Versão com Busca Inteligente")
     pagina_selecionada = st.radio(
         "Navegue pelos Módulos:",
         ["Página Inicial", "Anamnese Aprofundada", "Plano de Ensino Individualizado (PEI)", "Gerador de Atividades Adaptadas", "Modelo RTI (Resposta à Intervenção)", "Base de Conhecimento"],
@@ -47,14 +47,14 @@ with st.sidebar:
 # --- LÓGICA DAS PÁGINAS ---
 
 if pagina_selecionada == "Página Inicial":
-    st.title("Bem-vinda à Versão 5.0 da INTERVENÇÃO IA!")
-    st.subheader("Plataforma com estrutura de código profissional e modular.")
+    st.title("Bem-vinda à Versão 6.0 da INTERVENÇÃO IA!")
+    st.subheader("Plataforma aprimorada com busca inteligente de habilidades.")
     st.markdown("---")
-    st.success("Estrutura Aprimorada! Atendendo à sua sugestão, o código da BNCC foi dividido em arquivos separados por etapa de ensino, tornando o aplicativo mais organizado e eficiente.", icon="⚙️")
+    st.success("Nova Funcionalidade! Atendendo ao seu pedido, o Navegador da BNCC agora possui um campo de busca para filtrar habilidades e objetivos por palavras-chave.", icon="🔍")
     st.markdown("""
         **Navegue pelo menu à esquerda para acessar as ferramentas:**
         - **Anamnese Aprofundada:** Um guia estruturado para coletar informações cruciais.
-        - **PEI com Inteligência Clínica:** Com a BNCC completa e modularizada, crie metas precisas e descubra estratégias.
+        - **PEI com Inteligência Clínica:** Navegue pela BNCC completa ou use a nova busca por palavras-chave para encontrar exatamente o que precisa.
         - **Gerador de Atividades Adaptadas:** Crie materiais acessíveis com base nos princípios do DUA.
         - **Modelo RTI:** Planeje suas intervenções de forma escalonada e sistemática.
         - **Base de Conhecimento:** Revise conceitos fundamentais a qualquer momento.
@@ -72,38 +72,57 @@ elif pagina_selecionada == "Plano de Ensino Individualizado (PEI)":
             options=list(BNCC_DATABASE.keys())
         )
 
+        resultados = []
+
         if etapa_ensino == "Educação Infantil":
             grupo_etario = st.selectbox("2. Selecione o Grupo Etário:", options=list(BNCC_DATABASE["Educação Infantil"].keys()))
             campo_exp = st.selectbox("3. Selecione o Campo de Experiência:", options=list(BNCC_DATABASE["Educação Infantil"][grupo_etario].keys()))
+            keywords_input = st.text_input("Filtrar por palavras-chave (separadas por vírgula):", placeholder="Ex: corpo, gestos, sons")
             
-            if st.button("Ver Objetivos de Aprendizagem"):
-                st.subheader(f"✅ Objetivos para: {grupo_etario} / {campo_exp}")
-                # AQUI A CORREÇÃO: Mostra todos os objetivos da lista, como você pediu.
-                for obj in BNCC_DATABASE["Educação Infantil"][grupo_etario][campo_exp]:
-                    st.success(f"**Código:** {obj['codigo']}\n\n**Descrição:** {obj['descricao']}")
+            if st.button("Buscar Objetivos de Aprendizagem"):
+                resultados = BNCC_DATABASE["Educação Infantil"][grupo_etario][campo_exp]
 
         elif etapa_ensino == "Ensino Fundamental":
             ano_escolar = st.selectbox("2. Selecione o Ano Escolar:", options=list(BNCC_DATABASE["Ensino Fundamental"].keys()))
             componente = st.selectbox("3. Selecione o Componente Curricular:", options=list(BNCC_DATABASE["Ensino Fundamental"][ano_escolar].keys()))
-            
-            if st.button("Ver Habilidades"):
-                st.subheader(f"✅ Habilidades para: {ano_escolar} / {componente}")
-                for hab in BNCC_DATABASE["Ensino Fundamental"][ano_escolar][componente]:
-                    st.success(f"**Código:** {hab['codigo']}\n\n**Descrição:** {hab['descricao']}")
+            keywords_input = st.text_input("Filtrar por palavras-chave (separadas por vírgula):", placeholder="Ex: leitura, texto, análise")
+
+            if st.button("Buscar Habilidades"):
+                resultados = BNCC_DATABASE["Ensino Fundamental"][ano_escolar][componente]
         
         elif etapa_ensino == "Ensino Médio":
             st.selectbox("2. Selecione o Ano (para referência):", ["1º Ano", "2º Ano", "3º Ano"])
             area_conhecimento = st.selectbox("3. Selecione a Área de Conhecimento:", options=list(BNCC_DATABASE["Ensino Médio"].keys()))
+            keywords_input = st.text_input("Filtrar por palavras-chave (separadas por vírgula):", placeholder="Ex: discursos, mídias, análise")
 
-            if st.button("Ver Competências e Habilidades"):
-                dados_area = BNCC_DATABASE["Ensino Médio"][area_conhecimento]
+            if st.button("Buscar Competências e Habilidades"):
+                # No Ensino Médio, a busca se aplica apenas às habilidades.
+                resultados = BNCC_DATABASE["Ensino Médio"][area_conhecimento].get("Habilidades", [])
+                competencias = BNCC_DATABASE["Ensino Médio"][area_conhecimento].get("Competências Específicas", [])
+                
                 st.subheader(f"✅ Competências Específicas de {area_conhecimento}")
                 with st.container(border=True):
-                    for comp in dados_area["Competências Específicas"]:
+                    for comp in competencias:
                         st.markdown(f"**Competência {comp['codigo']}:** {comp['descricao']}")
-                st.subheader(f"✅ Habilidades de {area_conhecimento}")
-                for hab in dados_area["Habilidades"]:
-                    st.success(f"**Código:** {hab['codigo']}\n\n**Descrição:** {hab['descricao']}")
+
+        # --- LÓGICA DE FILTRAGEM E EXIBIÇÃO ---
+        if resultados:
+            resultados_filtrados = []
+            if keywords_input:
+                keywords = [key.strip().lower() for key in keywords_input.split(',')]
+                for item in resultados:
+                    descricao = item['descricao'].lower()
+                    if any(key in descricao for key in keywords):
+                        resultados_filtrados.append(item)
+            else:
+                resultados_filtrados = resultados
+
+            st.subheader("✅ Resultados Encontrados:")
+            if not resultados_filtrados:
+                st.warning("Nenhum item encontrado com as palavras-chave fornecidas.")
+            else:
+                for item in resultados_filtrados:
+                    st.success(f"**Código:** {item['codigo']}\n\n**Descrição:** {item['descricao']}")
 
     with tab2:
         st.subheader("Sugestão de Estratégias por Função Cognitiva")
@@ -113,9 +132,10 @@ elif pagina_selecionada == "Plano de Ensino Individualizado (PEI)":
             for estrategia in estrategias_por_funcao[funcao_selecionada]:
                 st.markdown(f"- {estrategia}")
 
-# O RESTANTE DO CÓDIGO DAS OUTRAS PÁGINAS PERMANECE O MESMO
+# --- O RESTANTE DO CÓDIGO PARA AS OUTRAS PÁGINAS CONTINUA O MESMO ---
 elif pagina_selecionada == "Anamnese Aprofundada":
     st.header("👤 Anamnese Aprofundada")
+    st.info("Colete e organize dados essenciais para uma intervenção precisa.")
     with st.form("form_anamnese_avancado"):
         st.text_input("Nome Completo do Aluno")
         with st.expander("Dados de Identificação e Histórico"):
