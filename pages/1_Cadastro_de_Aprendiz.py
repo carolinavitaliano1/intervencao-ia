@@ -1,6 +1,5 @@
 import streamlit as st
 import datetime
-import os
 from database_utils import salvar_dados_cadastro, excluir_aprendiz
 
 # --- CONFIGURAÇÃO DA PÁGINA E ESTADO ---
@@ -17,7 +16,7 @@ def get_radio_index(options_list, value):
     try:
         return options_list.index(value)
     except (ValueError, TypeError):
-        return len(options_list) - 1 # Retorna o índice da última opção ('Não') como padrão
+        return len(options_list) - 1
 
 # --- MODO DE CRIAÇÃO/EDIÇÃO ---
 if st.session_state.edit_mode:
@@ -35,71 +34,43 @@ if st.session_state.edit_mode:
                 data_nascimento = st.date_input("Data de Nascimento", value=datetime.datetime.strptime(data_nasc_str, '%Y-%m-%d').date())
                 principal_responsavel = st.text_input("Principal responsável", value=dados_cadastro.get("principal_responsavel", ""))
                 nome_escola = st.text_input("Nome da escola", value=dados_cadastro.get("nome_escola", ""))
-                data_pei_str = dados_cadastro.get('data_pei', datetime.date.today().strftime('%Y-%m-%d'))
-                data_pei = st.date_input("Data da elaboração do PEI", value=datetime.datetime.strptime(data_pei_str, '%Y-%m-%d').date())
-                tipo_documento = st.text_input("Tipo de documento", value=dados_cadastro.get("tipo_documento", ""))
             with col2:
                 grau_parentesco = st.text_input("Grau de parentesco do responsável", value=dados_cadastro.get("grau_parentesco", ""))
                 ano_escolar = st.text_input("Ano escolar", value=dados_cadastro.get("ano_escolar", "5º"))
                 tempo_escola = st.text_input("Estuda nessa escola há quanto tempo", value=dados_cadastro.get("tempo_escola", ""))
-                duracao_pei = st.text_input("Duração do PEI", value=dados_cadastro.get("duracao_pei", ""))
-                elaborado_por = st.text_input("Elaborado por", value=dados_cadastro.get("elaborado_por", ""))
-            
-            avaliacao_habilidades_resumo = st.text_area("Avaliação das habilidades (resumo)", value=dados_cadastro.get("avaliacao_habilidades_resumo", ""))
-            relatorio_equipe = st.text_area("Relatório da equipe multidisciplinar", value=dados_cadastro.get("relatorio_equipe", ""))
 
         with st.expander("DESENVOLVIMENTO E SAÚDE"):
-            col1, col2, col3 = st.columns(3)
+            col1, col2 = st.columns(2)
             with col1:
                 diagnostico = st.text_input("Diagnóstico", value=dados_cadastro.get("diagnostico", ""))
             with col2:
                 comorbidades = st.text_input("Comorbidades", value=dados_cadastro.get("comorbidades", ""))
-            with col3:
-                data_diag_str = dados_cadastro.get('data_diagnostico', datetime.date.today().strftime('%Y-%m-%d'))
-                data_diagnostico = st.date_input("Data do diagnóstico", value=datetime.datetime.strptime(data_diag_str, '%Y-%m-%d').date())
-            
             terapias = st.text_area("Terapias", value=dados_cadastro.get("terapias", ""))
-            
-            col1, col2 = st.columns(2)
-            with col1:
-                medico_responsavel = st.text_input("Médico responsável", value=dados_cadastro.get("medico_responsavel", ""))
-            with col2:
-                contato_medico = st.text_input("Contato (Médico)", value=dados_cadastro.get("contato_medico", ""))
-            
-            col1, col2, col3 = st.columns(3)
-            with col1:
-                medicacao_atual = st.text_input("Medicação atual", value=dados_cadastro.get("medicacao_atual", ""))
-            with col2:
-                horario_medicacao = st.text_input("Horário", value=dados_cadastro.get("horario_medicacao", ""))
-            with col3:
-                objetivo_medicacao = st.text_input("Objetivo", value=dados_cadastro.get("objetivo_medicacao", ""))
-                
-            alergia = st.text_area("Alergia", value=dados_cadastro.get("alergia", ""))
-            alteracao_sensorial = st.text_area("Alteração sensorial", value=dados_cadastro.get("alteracao_sensorial", ""))
-            gatilhos_crises = st.text_area("Gatilhos para crises", value=dados_cadastro.get("gatilhos_crises", ""))
-            outras_infos_saude = st.text_area("Outras informações relevantes", value=dados_cadastro.get("outras_infos_saude", ""))
 
         with st.expander("ESCOLA E EQUIPE"):
+            st.subheader("Contatos dos Profissionais")
             col1, col2 = st.columns(2)
             with col1:
                 prof_principal = st.text_input("Professor Principal", value=dados_cadastro.get("prof_principal", ""))
-                acomp_escolar = st.text_input("Acompanhante escolar", value=dados_cadastro.get("acomp_escolar", ""))
-                coord_pedagogica = st.text_input("Coordenação Pedagógica", value=dados_cadastro.get("coord_pedagogica", ""))
-                sala_recursos = st.text_input("Sala de recursos/AEE", value=dados_cadastro.get("sala_recursos", ""))
+                prof_principal_contato = st.text_input("Telefone/WhatsApp (Prof. Principal)", value=dados_cadastro.get("prof_principal_contato", ""))
+                prof_principal_email = st.text_input("E-mail (Prof. Principal)", value=dados_cadastro.get("prof_principal_email", ""))
             with col2:
-                prof_especialistas = st.text_area("Professores Especialistas", value=dados_cadastro.get("prof_especialistas", ""))
-                acomp_terapeutico = st.text_input("Acompanhante terapêutico (clínica ou família)", value=dados_cadastro.get("acomp_terapeutico", ""))
-                orient_pedagogica = st.text_input("Orientação Pedagógica", value=dados_cadastro.get("orient_pedagogica", ""))
-                resp_sala_recursos = st.text_input("Responsável (Sala de recursos/AEE)", value=dados_cadastro.get("resp_sala_recursos", ""))
+                acomp_escolar = st.text_input("Acompanhante escolar", value=dados_cadastro.get("acomp_escolar", ""))
+                acomp_escolar_contato = st.text_input("Telefone/WhatsApp (Acomp. Escolar)", value=dados_cadastro.get("acomp_escolar_contato", ""))
+                acomp_escolar_email = st.text_input("E-mail (Acomp. Escolar)", value=dados_cadastro.get("acomp_escolar_email", ""))
+            st.markdown("---")
+            col3, col4 = st.columns(2)
+            with col3:
+                coord_pedagogica = st.text_input("Coordenação Pedagógica", value=dados_cadastro.get("coord_pedagogica", ""))
+                coord_pedagogica_contato = st.text_input("Telefone/WhatsApp (Coordenação)", value=dados_cadastro.get("coord_pedagogica_contato", ""))
+                coord_pedagogica_email = st.text_input("E-mail (Coordenação)", value=dados_cadastro.get("coord_pedagogica_email", ""))
+            with col4:
+                sala_recursos = st.text_input("Sala de recursos/AEE", value=dados_cadastro.get("sala_recursos", ""))
+                resp_sala_recursos = st.text_input("Responsável (Sala de Recursos)", value=dados_cadastro.get("resp_sala_recursos", ""))
+                resp_sala_recursos_contato = st.text_input("Contato (Sala de Recursos)", value=dados_cadastro.get("resp_sala_recursos_contato", ""))
         
         with st.expander("AVALIAÇÃO"):
-            radio_opts = ["Sim", "Não"]
-            aval_multi = st.radio("Possui avaliação da equipe multi?", radio_opts, horizontal=True, index=get_radio_index(radio_opts, dados_cadastro.get("aval_multi")))
-            dev_habilidades = st.radio("Precisa desenvolver habilidades básicas?", radio_opts, horizontal=True, index=get_radio_index(radio_opts, dados_cadastro.get("dev_habilidades")))
-            adapt_materiais = st.radio("Possui necessidade de adaptação de materiais?", radio_opts, horizontal=True, index=get_radio_index(radio_opts, dados_cadastro.get("adapt_materiais")))
-            adapt_curriculo = st.radio("Possui necessidade de adaptação de currículo?", radio_opts, horizontal=True, index=get_radio_index(radio_opts, dados_cadastro.get("adapt_curriculo")))
-            disciplinas_apoio = st.text_area("Disciplinas que necessita de maior apoio", value=dados_cadastro.get("disciplinas_apoio", ""))
-            anexos = st.file_uploader("Enviar anexos de avaliação anterior", accept_multiple_files=True)
+            anexos = st.file_uploader("Enviar anexos de avaliação", accept_multiple_files=True)
 
         col_submit, col_cancel = st.columns(2)
         with col_submit:
@@ -116,17 +87,11 @@ if st.session_state.edit_mode:
                 novos_dados_cadastro = {
                     "data_nascimento": data_nascimento.strftime('%Y-%m-%d'), "principal_responsavel": principal_responsavel,
                     "grau_parentesco": grau_parentesco, "nome_escola": nome_escola, "ano_escolar": ano_escolar, "tempo_escola": tempo_escola,
-                    "data_pei": data_pei.strftime('%Y-%m-%d'), "duracao_pei": duracao_pei, "tipo_documento": tipo_documento, "elaborado_por": elaborado_por,
-                    "avaliacao_habilidades_resumo": avaliacao_habilidades_resumo, "relatorio_equipe": relatorio_equipe,
-                    "diagnostico": diagnostico, "comorbidades": comorbidades, "data_diagnostico": data_diagnostico.strftime('%Y-%m-%d'),
-                    "terapias": terapias, "medico_responsavel": medico_responsavel, "contato_medico": contato_medico,
-                    "medicacao_atual": medicacao_atual, "horario_medicacao": horario_medicacao, "objetivo_medicacao": objetivo_medicacao,
-                    "alergia": alergia, "alteracao_sensorial": alteracao_sensorial, "gatilhos_crises": gatilhos_crises,
-                    "outras_infos_saude": outras_infos_saude, "prof_principal": prof_principal, "acomp_escolar": acomp_escolar,
-                    "coord_pedagogica": coord_pedagogica, "sala_recursos": sala_recursos, "prof_especialistas": prof_especialistas,
-                    "acomp_terapeutico": acomp_terapeutico, "orient_pedagogica": orient_pedagogica, "resp_sala_recursos": resp_sala_recursos,
-                    "aval_multi": aval_multi, "dev_habilidades": dev_habilidades, "adapt_materiais": adapt_materiais,
-                    "adapt_curriculo": adapt_curriculo, "disciplinas_apoio": disciplinas_apoio,
+                    "diagnostico": diagnostico, "comorbidades": comorbidades, "terapias": terapias,
+                    "prof_principal": prof_principal, "prof_principal_contato": prof_principal_contato, "prof_principal_email": prof_principal_email,
+                    "acomp_escolar": acomp_escolar, "acomp_escolar_contato": acomp_escolar_contato, "acomp_escolar_email": acomp_escolar_email,
+                    "coord_pedagogica": coord_pedagogica, "coord_pedagogica_contato": coord_pedagogica_contato, "coord_pedagogica_email": coord_pedagogica_email,
+                    "sala_recursos": sala_recursos, "resp_sala_recursos": resp_sala_recursos, "resp_sala_recursos_contato": resp_sala_recursos_contato
                 }
                 salvar_dados_cadastro(nome_aluno, novos_dados_cadastro)
                 st.session_state.nome_aprendiz_ativo = nome_aluno
@@ -144,10 +109,33 @@ else:
         col1, col2 = st.columns(2)
         col1.metric("Responsável", dados_cadastro.get('principal_responsavel') or "Não informado")
         col2.metric("Escola", dados_cadastro.get('nome_escola') or "Não informado")
-        st.info(f"**Relatório da Equipe Multidisciplinar:** {dados_cadastro.get('relatorio_equipe') or 'N/A'}")
+        col1.metric("Ano Escolar", dados_cadastro.get('ano_escolar') or "Não informado")
 
-    # Adicione outros containers para visualizar as novas informações
-    # ...
+    with st.container(border=True):
+        st.subheader("Desenvolvimento e Saúde")
+        col1, col2 = st.columns(2)
+        col1.metric("Diagnóstico", dados_cadastro.get('diagnostico') or "Não informado")
+        col2.metric("Comorbidades", dados_cadastro.get('comorbidades') or "Não informado")
+        st.write("**Terapias:**")
+        st.info(dados_cadastro.get('terapias') or "Nenhuma informação.")
+        
+    with st.container(border=True):
+        st.subheader("Escola e Equipe")
+        col1, col2 = st.columns(2)
+        with col1:
+            st.write(f"**Professor Principal:** {dados_cadastro.get('prof_principal') or 'N/A'}")
+            st.caption(f"📞 {dados_cadastro.get('prof_principal_contato') or 'N/A'}  |  ✉️ {dados_cadastro.get('prof_principal_email') or 'N/A'}")
+        with col2:
+            st.write(f"**Acompanhante Escolar:** {dados_cadastro.get('acomp_escolar') or 'N/A'}")
+            st.caption(f"📞 {dados_cadastro.get('acomp_escolar_contato') or 'N/A'}  |  ✉️ {dados_cadastro.get('acomp_escolar_email') or 'N/A'}")
+        st.markdown("---")
+        col3, col4 = st.columns(2)
+        with col3:
+            st.write(f"**Coordenação Pedagógica:** {dados_cadastro.get('coord_pedagogica') or 'N/A'}")
+            st.caption(f"📞 {dados_cadastro.get('coord_pedagogica_contato') or 'N/A'}  |  ✉️ {dados_cadastro.get('coord_pedagogica_email') or 'N/A'}")
+        with col4:
+            st.write(f"**Responsável Sala de Recursos:** {dados_cadastro.get('resp_sala_recursos') or 'N/A'}")
+            st.caption(f"📞 {dados_cadastro.get('resp_sala_recursos_contato') or 'N/A'}")
 
     st.write("")
     col1, col2, col3 = st.columns([1,1.2,1])
