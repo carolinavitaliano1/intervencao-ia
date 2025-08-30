@@ -35,10 +35,11 @@ estrategias_por_funcao = {
 with st.sidebar:
     st.title("🧠 INTERVENÇÃO IA")
     st.caption("Versão Final e Organizada")
+    # --- MODIFICAÇÃO 1: Itens removidos da lista de navegação ---
     pagina_selecionada = st.radio(
         "Navegue pelos Módulos:",
-        ["Página Inicial", "Anamnese Aprofundada", "Plano de Ensino Individualizado (PEI)", "Gerador de Atividades Adaptadas", "Modelo RTI (Resposta à Intervenção)", "Base de Conhecimento"],
-        captions=["Visão geral", "Registre informações do aluno", "Crie metas e estratégias", "Adapte materiais pedagógicos", "Planeje a intervenção em camadas", "Consulte conceitos-chave"]
+        ["Página Inicial", "Anamnese Aprofundada", "Plano de Ensino Individualizado (PEI)", "Gerador de Atividades Adaptadas"],
+        captions=["Visão geral", "Registre informações do aluno", "Crie metas e estratégias", "Adapte materiais pedagógicos"]
     )
     st.sidebar.markdown("---")
     st.info("Uma ferramenta especialista para uma educação inclusiva e baseada em evidências.")
@@ -56,8 +57,6 @@ if pagina_selecionada == "Página Inicial":
         - **Anamnese Aprofundada:** Um guia estruturado para coletar informações cruciais.
         - **PEI com Inteligência Clínica:** Navegue pela BNCC completa e use a busca aprimorada por palavras-chave.
         - **Gerador de Atividades Adaptadas:** Crie materiais acessíveis com base nos princípios do DUA.
-        - **Modelo RTI:** Planeje suas intervenções de forma escalonada e sistemática.
-        - **Base de Conhecimento:** Revise conceitos fundamentais a qualquer momento.
     """)
 
 elif pagina_selecionada == "Plano de Ensino Individualizado (PEI)":
@@ -139,16 +138,11 @@ elif pagina_selecionada == "Plano de Ensino Individualizado (PEI)":
             for estrategia in estrategias_por_funcao[funcao_selecionada]:
                 st.markdown(f"- {estrategia}")
 
-# --- O RESTANTE DO CÓDIGO PARA AS OUTRAS PÁGINAS CONTINUA O MESMO ---
 elif pagina_selecionada == "Anamnese Aprofundada":
     st.header("👤 Anamnese Aprofundada")
     # ... (código mantido)
 elif pagina_selecionada == "Gerador de Atividades Adaptadas":
     st.header("🎨 Gerador de Atividades Adaptadas (Avançado)")
     # ... (código mantido)
-elif pagina_selecionada == "Modelo RTI (Resposta à Intervenção)":
-    st.header("📊 Modelo RTI (Resposta à Intervenção)")
-    # ... (código mantido)
-elif pagina_selecionada == "Base de Conhecimento":
-    st.header("📚 Base de Conhecimento")
-    # ... (código mantido)
+
+# --- MODIFICAÇÃO 2: Blocos 'elif' para "Modelo RTI" e "Base de Conhecimento" foram removidos ---
