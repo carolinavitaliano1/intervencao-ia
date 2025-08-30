@@ -94,11 +94,10 @@ if st.session_state.edit_mode:
                 acomp_escolar = st.text_input("Acompanhante escolar", value=dados_cadastro.get("acomp_escolar", ""))
                 acomp_escolar_contato = st.text_input("Contato (Acomp. Escolar)", value=dados_cadastro.get("acomp_escolar_contato", ""))
 
-       with st.expander("AUTONOMIA"):
+        with st.expander("AUTONOMIA"):
             radio_opts_sim_nao = ["Sim", "Não"]
             comunicacao = st.text_area("Formas de Comunicação", value=dados_cadastro.get("comunicacao", ""))
             comunicacao_alt = st.radio("Utiliza comunicação alternativa?", radio_opts_sim_nao, horizontal=True, index=get_radio_index(radio_opts_sim_nao, dados_cadastro.get("comunicacao_alt")))
-            
             col1, col2 = st.columns(2)
             with col1:
                 fica_sozinho = st.radio("Consegue ficar em sala de aula sozinho(a)?", radio_opts_sim_nao, index=get_radio_index(radio_opts_sim_nao, dados_cadastro.get("fica_sozinho")))
@@ -106,15 +105,18 @@ if st.session_state.edit_mode:
             with col2:
                 bebe_agua = st.radio("Consegue beber água sozinho(a)?", radio_opts_sim_nao, index=get_radio_index(radio_opts_sim_nao, dados_cadastro.get("bebe_agua")))
                 mobilidade_reduzida = st.radio("Possui mobilidade reduzida?", radio_opts_sim_nao, index=get_radio_index(radio_opts_sim_nao, dados_cadastro.get("mobilidade_reduzida")))
-
             costuma_crises = st.radio("Costuma ter crises?", ["Sim", "Não", "Raramente"], horizontal=True, index=get_radio_index(["Sim", "Não", "Raramente"], dados_cadastro.get("costuma_crises")))
-            
             col1, col2 = st.columns(2)
             with col1:
                 principais_gatilhos = st.text_area("Principais gatilhos", value=dados_cadastro.get("principais_gatilhos", ""))
             with col2:
                 como_regula = st.text_area("Como se regula", value=dados_cadastro.get("como_regula", ""))
-        
+
+        with st.expander("GENERALIZAÇÃO E METAS DE AVDs"):
+            st.info("Descreva as metas e os níveis de ajuda para Atividades de Vida Diária (AVDs).")
+            avd_higiene = st.text_area("Metas para Higiene (Limpar-se, Escovar os dentes, etc.)", value=dados_cadastro.get("avd_higiene", ""))
+            avd_alimentacao = st.text_area("Metas para Alimentação (Lanchar com independência, etc.)", value=dados_cadastro.get("avd_alimentacao", ""))
+
         with st.expander("AVALIAÇÃO GERAL"):
             col1, col2 = st.columns(2)
             with col1:
@@ -149,16 +151,11 @@ if st.session_state.edit_mode:
                     "objetivo_medicacao": objetivo_medicacao, "alergia": alergia, "alteracao_sensorial": alteracao_sensorial, "gatilhos_crises": gatilhos_crises,
                     "outras_infos_saude": outras_infos_saude, "prof_principal": prof_principal, "prof_principal_contato": prof_principal_contato,
                     "acomp_escolar": acomp_escolar, "acomp_escolar_contato": acomp_escolar_contato, "comunicacao": comunicacao, "comunicacao_alt": comunicacao_alt,
+                    "fica_sozinho": fica_sozinho, "usa_banheiro": usa_banheiro, "bebe_agua": bebe_agua, "mobilidade_reduzida": mobilidade_reduzida,
                     "costuma_crises": costuma_crises, "principais_gatilhos": principais_gatilhos, "como_regula": como_regula,
-                    "dificuldades": dificuldades, "potencialidades": potencialidades, "aval_multi": aval_multi, "dev_habilidades": dev_habilidades,
-                    "adapt_materiais": adapt_materiais, "adapt_curriculo": adapt_curriculo, "disciplinas_apoio": disciplinas_apoio,
-                    # ... outras variáveis ...
-                "comunicacao": comunicacao, "comunicacao_alt": comunicacao_alt,
-                "fica_sozinho": fica_sozinho, "usa_banheiro": usa_banheiro,
-                "bebe_agua": bebe_agua, "mobilidade_reduzida": mobilidade_reduzida,
-                "costuma_crises": costuma_crises, "principais_gatilhos": principais_gatilhos,
-                "como_regula": como_regula,
-                # ... outras variáveis ...
+                    "avd_higiene": avd_higiene, "avd_alimentacao": avd_alimentacao, "dificuldades": dificuldades, "potencialidades": potencialidades,
+                    "aval_multi": aval_multi, "dev_habilidades": dev_habilidades, "adapt_materiais": adapt_materiais,
+                    "adapt_curriculo": adapt_curriculo, "disciplinas_apoio": disciplinas_apoio,
                 }
                 salvar_dados_cadastro(nome_aluno, novos_dados_cadastro)
                 st.session_state.nome_aprendiz_ativo = nome_aluno
@@ -188,26 +185,27 @@ else:
         col1.metric("Idade", idade)
         col3.metric("Ano Escolar", dados_cadastro.get('ano_escolar') or "Não informado")
 
-    # Adicione aqui os outros containers de visualização para todas as seções...
-with st.container(border=True):
-        st.subheader("Autonomia")
-        st.write(f"**Formas de Comunicação:**")
-        st.info(dados_cadastro.get('comunicacao') or "Não informado")
+    with st.container(border=True):
+        st.subheader("Desenvolvimento e Saúde")
+        col1, col2 = st.columns(2)
+        col1.metric("Diagnóstico", dados_cadastro.get('diagnostico') or "Não informado")
+        col2.metric("Comorbidades", dados_cadastro.get('comorbidades') or "Não informado")
         
+    with st.container(border=True):
+        st.subheader("Escola e Equipe")
         col1, col2 = st.columns(2)
         with col1:
-            st.write(f"**Utiliza comunicação alternativa?** {dados_cadastro.get('comunicacao_alt', 'N/A')}")
-            st.write(f"**Consegue ficar em sala sozinho(a)?** {dados_cadastro.get('fica_sozinho', 'N/A')}")
-            st.write(f"**Consegue utilizar o banheiro sozinho(a)?** {dados_cadastro.get('usa_banheiro', 'N/A')}")
+            st.write(f"**Professor Principal:** {dados_cadastro.get('prof_principal') or 'N/A'}")
+            st.caption(f"📞 {dados_cadastro.get('prof_principal_contato') or 'Não informado'}")
         with col2:
-            st.write(f"**Consegue beber água sozinho(a)?** {dados_cadastro.get('bebe_agua', 'N/A')}")
-            st.write(f"**Possui mobilidade reduzida?** {dados_cadastro.get('mobilidade_reduzida', 'N/A')}")
-            st.write(f"**Costuma ter crises?** {dados_cadastro.get('costuma_crises', 'N/A')}")
-        
-        st.write(f"**Principais gatilhos:**")
-        st.warning(dados_cadastro.get('principais_gatilhos') or "Não informado")
-        st.write(f"**Como se regula:**")
-        st.success(dados_cadastro.get('como_regula') or "Não informado")
+            st.write(f"**Acompanhante Escolar:** {dados_cadastro.get('acomp_escolar') or 'N/A'}")
+            st.caption(f"📞 {dados_cadastro.get('acomp_escolar_contato') or 'Não informado'}")
+
+    with st.container(border=True):
+        st.subheader("Autonomia")
+        st.write(f"**Utiliza comunicação alternativa?** {dados_cadastro.get('comunicacao_alt') or 'Não informado'}")
+        st.write(f"**Costuma ter crises?** {dados_cadastro.get('costuma_crises') or 'Não informado'}")
+
     st.write("")
     col1, col2, col3 = st.columns([1,1.2,1])
     with col1:
