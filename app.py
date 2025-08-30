@@ -5,7 +5,7 @@ from bncc_data import BNCC_DATABASE  # IMPORTANTE: Esta linha importa a BNCC com
 # --- CONFIGURAÇÃO DA PÁGINA ---
 st.set_page_config(
     layout="wide",
-    page_title="INTERVENÇÃO IA 3.0",
+    page_title="INTERVENÇÃO IA 4.0",
     page_icon="🧠"
 )
 
@@ -22,7 +22,7 @@ estrategias_por_funcao = {
 
 # --- MENU LATERAL DE NAVEGAÇÃO ---
 with st.sidebar:
-    st.title("🧠 INTERVENÇÃO IA 3.0")
+    st.title("🧠 INTERVENÇÃO IA 4.0")
     pagina_selecionada = st.radio(
         "Navegue pelos Módulos:",
         ["Página Inicial", "Anamnese Aprofundada", "Plano de Ensino Individualizado (PEI)", "Gerador de Atividades Adaptadas", "Modelo RTI (Resposta à Intervenção)", "Base de Conhecimento"],
@@ -35,10 +35,10 @@ with st.sidebar:
 # --- LÓGICA DAS PÁGINAS ---
 
 if pagina_selecionada == "Página Inicial":
-    st.title("Bem-vinda à Versão 3.0 da INTERVENÇÃO IA!")
-    st.subheader("Plataforma completa com toda a Base Nacional Comum Curricular (BNCC).")
+    st.title("Bem-vinda à Versão 4.0 da INTERVENÇÃO IA!")
+    st.subheader("Plataforma completa com toda a BNCC: Ed. Infantil, Ens. Fundamental e Ens. Médio.")
     st.markdown("---")
-    st.success("Missão Cumprida! Atendendo ao seu pedido, a BNCC para Educação Infantil e Ensino Fundamental (1º ao 9º ano) foi totalmente integrada ao sistema.", icon="✅")
+    st.success("Atualização Concluída! O Ensino Médio, com suas Áreas de Conhecimento, Competências e Habilidades, foi integrado ao sistema.", icon="🚀")
     st.markdown("""
         **Navegue pelo menu à esquerda para acessar as ferramentas:**
         - **Anamnese Aprofundada:** Um guia estruturado para coletar informações cruciais.
@@ -52,48 +52,59 @@ elif pagina_selecionada == "Plano de Ensino Individualizado (PEI)":
     st.header("📝 Plano de Ensino Individualizado (PEI)")
     st.info("Utilize a base de dados completa da BNCC para fundamentar seu planejamento.")
     
-    tab1, tab2 = st.tabs(["🎯 **Seleção de Habilidades (BNCC)**", "💡 **Banco de Estratégias Clínicas**"])
+    tab1, tab2 = st.tabs(["🎯 **Navegador da BNCC**", "💡 **Banco de Estratégias Clínicas**"])
 
     with tab1:
-        st.subheader("Navegador da BNCC")
-        
-        etapa_ensino = st.selectbox("1. Selecione a Etapa de Ensino:", options=list(BNCC_DATABASE.keys()))
+        # --- NOVA INTERFACE DE SELEÇÃO COM ENSINO MÉDIO ---
+        etapa_ensino = st.selectbox(
+            "1. Selecione a Etapa de Ensino:",
+            options=list(BNCC_DATABASE.keys())
+        )
 
         if etapa_ensino == "Educação Infantil":
             grupo_etario = st.selectbox("2. Selecione o Grupo Etário:", options=list(BNCC_DATABASE["Educação Infantil"].keys()))
             campo_exp = st.selectbox("3. Selecione o Campo de Experiência:", options=list(BNCC_DATABASE["Educação Infantil"][grupo_etario].keys()))
             
             if st.button("Ver Objetivos de Aprendizagem"):
-                objetivos = BNCC_DATABASE["Educação Infantil"][grupo_etario][campo_exp]
                 st.subheader(f"✅ Objetivos para: {grupo_etario} / {campo_exp}")
-                for obj in objetivos:
+                for obj in BNCC_DATABASE["Educação Infantil"][grupo_etario][campo_exp]:
                     st.success(f"**Código:** {obj['codigo']}\n\n**Descrição:** {obj['descricao']}")
 
-        else:  # Ensino Fundamental
+        elif etapa_ensino == "Ensino Fundamental":
             ano_escolar = st.selectbox("2. Selecione o Ano Escolar:", options=list(BNCC_DATABASE["Ensino Fundamental"].keys()))
             componente = st.selectbox("3. Selecione o Componente Curricular:", options=list(BNCC_DATABASE["Ensino Fundamental"][ano_escolar].keys()))
             
             if st.button("Ver Habilidades"):
-                habilidades = BNCC_DATABASE["Ensino Fundamental"][ano_escolar][componente]
                 st.subheader(f"✅ Habilidades para: {ano_escolar} / {componente}")
-                for hab in habilidades:
+                for hab in BNCC_DATABASE["Ensino Fundamental"][ano_escolar][componente]:
+                    st.success(f"**Código:** {hab['codigo']}\n\n**Descrição:** {hab['descricao']}")
+        
+        elif etapa_ensino == "Ensino Médio":
+            st.selectbox("2. Selecione o Ano (para referência):", ["1º Ano", "2º Ano", "3º Ano"])
+            area_conhecimento = st.selectbox("3. Selecione a Área de Conhecimento:", options=list(BNCC_DATABASE["Ensino Médio"].keys()))
+
+            if st.button("Ver Competências e Habilidades"):
+                dados_area = BNCC_DATABASE["Ensino Médio"][area_conhecimento]
+                
+                st.subheader(f"✅ Competências Específicas de {area_conhecimento}")
+                with st.container(border=True):
+                    for comp in dados_area["Competências Específicas"]:
+                        st.markdown(f"**Competência {comp['codigo']}:** {comp['descricao']}")
+                
+                st.subheader(f"✅ Habilidades de {area_conhecimento}")
+                for hab in dados_area["Habilidades"]:
                     st.success(f"**Código:** {hab['codigo']}\n\n**Descrição:** {hab['descricao']}")
 
     with tab2:
         st.subheader("Sugestão de Estratégias por Função Cognitiva")
-        st.warning("Selecione a principal função cognitiva que precisa ser trabalhada para ver estratégias de intervenção direcionadas.", icon="🎯")
-        
-        funcao_selecionada = st.selectbox(
-            "Selecione a função cognitiva a ser estimulada:",
-            options=list(estrategias_por_funcao.keys())
-        )
-        
+        funcao_selecionada = st.selectbox("Selecione a função cognitiva a ser estimulada:", options=list(estrategias_por_funcao.keys()))
         st.markdown(f"#### Estratégias para **{funcao_selecionada}**:")
         with st.container(border=True):
             for estrategia in estrategias_por_funcao[funcao_selecionada]:
                 st.markdown(f"- {estrategia}")
 
 # --- O RESTANTE DO CÓDIGO PARA AS OUTRAS PÁGINAS CONTINUA O MESMO ---
+# (O código das outras páginas não foi alterado)
 elif pagina_selecionada == "Anamnese Aprofundada":
     st.header("👤 Anamnese Aprofundada")
     st.info("Colete e organize dados essenciais para uma intervenção precisa.")
@@ -143,7 +154,7 @@ elif pagina_selecionada == "Gerador de Atividades Adaptadas":
             if adapt_vocabulario: enunciado_adaptado = "Vamos calcular! Resolva as continhas abaixo."
             st.markdown(f"**Enunciado:** {enunciado_adaptado}")
             questoes = atividade_original.split('\n')
-            if adapt_quantidade: questoes = questoes[:len(questoes)//2]
+            if adapt_quantidade: questoes = questoes[:len(questoes)//2] if len(questoes) > 1 else questoes
             for q in questoes: st.write(q)
             st.markdown("---"); st.markdown("**Recomendações para Aplicação:**")
             if adapt_fonte: st.write("- Imprimir com fonte 20pt e espaçamento 1.5 entre linhas.")
