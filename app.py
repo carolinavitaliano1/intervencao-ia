@@ -27,7 +27,7 @@ estrategias_por_funcao = {
     "Controle Inibitório": ["Utilizar sinais de 'Pare e Pense' antes de responder.", "Praticar jogos que exigem espera e troca de turno.", "Estabelecer rotinas claras e previsíveis.", "Antecipar mudanças na rotina."],
     "Flexibilidade Cognitiva": ["Jogos que exigem mudança de regras.", "Apresentar o mesmo problema com diferentes formas de resolução.", "Criar histórias com finais alternativos.", "Incentivar o 'brainstorming' de ideias."],
     "Processamento Fonológico": ["Atividades lúdicas com rimas, aliterações e segmentação de sílabas/fonemas.", "Utilizar o método fônico multissensorial.", "Jogos de 'bingo de sons'.", "Uso de softwares focados em consciência fonológica."],
-    "Processamento Visoespacial": ["Utilizar papel quadriculado para alinhar números e letras.", "Montagem de quebra-cabeças e LEGO seguindo modelos.", "Jogos de labirinto e 'encontre os 7 erros'.", "Destacar linhas ou usar réguas de leitura."]
+    "Processamento Visoespacial": ["Utilizar papel quadriculado para alinhar números e letras.", "Montagem de quebra--cabeças e LEGO seguindo modelos.", "Jogos de labirinto e 'encontre os 7 erros'.", "Destacar linhas ou usar réguas de leitura."]
 }
 
 
@@ -35,11 +35,11 @@ estrategias_por_funcao = {
 with st.sidebar:
     st.title("🧠 INTERVENÇÃO IA")
     st.caption("Versão Final e Organizada")
-    # --- MODIFICAÇÃO 1: Itens removidos da lista de navegação ---
+    # --- MODIFICAÇÃO: "Anamnese Aprofundada" foi trocada por "Cadastro do Aluno" ---
     pagina_selecionada = st.radio(
         "Navegue pelos Módulos:",
-        ["Página Inicial", "Anamnese Aprofundada", "Plano de Ensino Individualizado (PEI)", "Gerador de Atividades Adaptadas"],
-        captions=["Visão geral", "Registre informações do aluno", "Crie metas e estratégias", "Adapte materiais pedagógicos"]
+        ["Página Inicial", "Cadastro do Aluno", "Plano de Ensino Individualizado (PEI)", "Gerador de Atividades Adaptadas"],
+        captions=["Visão geral", "Insira os dados do aluno", "Crie metas e estratégias", "Adapte materiais pedagógicos"]
     )
     st.sidebar.markdown("---")
     st.info("Uma ferramenta especialista para uma educação inclusiva e baseada em evidências.")
@@ -54,10 +54,45 @@ if pagina_selecionada == "Página Inicial":
     st.success("Tudo pronto! Revertemos para a estrutura organizada com arquivos separados e aprimoramos a busca de habilidades para resultados precisos.", icon="🚀")
     st.markdown("""
         **Navegue pelo menu à esquerda para acessar as ferramentas:**
-        - **Anamnese Aprofundada:** Um guia estruturado para coletar informações cruciais.
+        - **Cadastro do Aluno:** Um guia estruturado para coletar informações cruciais.
         - **PEI com Inteligência Clínica:** Navegue pela BNCC completa e use a busca aprimorada por palavras-chave.
         - **Gerador de Atividades Adaptadas:** Crie materiais acessíveis com base nos princípios do DUA.
     """)
+
+# --- MODIFICAÇÃO: O conteúdo da página foi substituído pelo formulário de cadastro ---
+elif pagina_selecionada == "Cadastro do Aluno":
+    st.header("👤 Cadastro do Aluno")
+    st.info("Preencha as informações abaixo para iniciar o planejamento.")
+
+    with st.container(border=True):
+        st.subheader("Dados de Identificação")
+        col1, col2 = st.columns(2)
+        with col1:
+            st.text_input("Nome do aluno:")
+            st.text_input("Principal responsável:")
+            st.text_input("Nome da escola:")
+        with col2:
+            st.date_input("Data de Nascimento:")
+            st.text_input("Grau de parentesco do responsável:")
+            [cite_start]st.text_input("Ano escolar:", value="5º") # Valor padrão baseado no documento [cite: 4]
+    
+    with st.container(border=True):
+        st.subheader("Desenvolvimento e Saúde")
+        col1, col2 = st.columns(2)
+        with col1:
+            st.text_input("Diagnóstico(s) / Transtorno(s):")
+        with col2:
+            st.text_input("Comorbidades:")
+        st.text_area("Terapias realizadas:")
+
+    with st.container(border=True):
+        st.subheader("Análise Pedagógica")
+        col1, col2 = st.columns(2)
+        with col1:
+            st.text_area("Principais Dificuldades (restrições):", height=200)
+        with col2:
+            st.text_area("Principais Potencialidades (pontos fortes / o que gosta):", height=200)
+
 
 elif pagina_selecionada == "Plano de Ensino Individualizado (PEI)":
     st.header("📝 Plano de Ensino Individualizado (PEI)")
@@ -111,16 +146,13 @@ elif pagina_selecionada == "Plano de Ensino Individualizado (PEI)":
             
             resultados_filtrados = []
             
-            # Se o campo de busca foi preenchido, filtramos os resultados
             if keywords_input.strip():
                 keywords = [key.strip().lower() for key in keywords_input.split(',')]
                 for item in lista_geral:
                     descricao = item['descricao'].lower()
-                    # Verifica se TODAS as palavras-chave estão na descrição
                     if all(key in descricao for key in keywords):
                         resultados_filtrados.append(item)
             else:
-                # Se o campo de busca estiver vazio, mostramos tudo
                 resultados_filtrados = lista_geral
 
             if not resultados_filtrados:
@@ -138,11 +170,6 @@ elif pagina_selecionada == "Plano de Ensino Individualizado (PEI)":
             for estrategia in estrategias_por_funcao[funcao_selecionada]:
                 st.markdown(f"- {estrategia}")
 
-elif pagina_selecionada == "Anamnese Aprofundada":
-    st.header("👤 Anamnese Aprofundada")
-    # ... (código mantido)
 elif pagina_selecionada == "Gerador de Atividades Adaptadas":
     st.header("🎨 Gerador de Atividades Adaptadas (Avançado)")
-    # ... (código mantido)
-
-# --- MODIFICAÇÃO 2: Blocos 'elif' para "Modelo RTI" e "Base de Conhecimento" foram removidos ---
+    # ... (código mantido, pode ser desenvolvido futuramente)
