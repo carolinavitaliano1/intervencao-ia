@@ -1,6 +1,5 @@
 import streamlit as st
 from database_utils import carregar_dados
-from streamlit_extras.switch_page_button import switch_page
 
 st.set_page_config(
     layout="wide",
@@ -21,7 +20,8 @@ with st.sidebar:
     if st.button("➕ Cadastrar Novo Aprendiz"):
         st.session_state.aprendiz_ativo = None
         st.session_state.nome_aprendiz_ativo = None
-        switch_page("Cadastro de Aprendiz")
+        # Correção: Usa a função nativa st.switch_page
+        st.switch_page("pages/1_Cadastro_de_Aprendiz.py")
 
     st.markdown("---")
     
