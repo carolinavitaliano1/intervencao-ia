@@ -37,11 +37,11 @@ if st.session_state.edit_mode:
             with col1:
                 data_nasc_str = dados_cadastro.get('data_nascimento', '2015-08-30')
                 data_nascimento = st.date_input("Data de Nascimento", value=datetime.datetime.strptime(data_nasc_str, '%Y-%m-%d').date(), min_value=datetime.date(1970, 1, 1), max_value=datetime.date.today())
-                principal_responsavel = st.text_input("Principal responsável", value=dados_cadastro.get("principal_responsavel", ""))
-                nome_escola = st.text_input("Nome da escola", value=dados_cadastro.get("nome_escola", ""))
-            with col2:
                 idade = st.text_input("Idade (preenchimento manual)", value=dados_cadastro.get("idade", ""))
+                principal_responsavel = st.text_input("Principal responsável", value=dados_cadastro.get("principal_responsavel", ""))
+            with col2:
                 grau_parentesco = st.text_input("Grau de parentesco do responsável", value=dados_cadastro.get("grau_parentesco", ""))
+                nome_escola = st.text_input("Nome da escola", value=dados_cadastro.get("nome_escola", ""))
                 ano_escolar = st.text_input("Ano escolar", value=dados_cadastro.get("ano_escolar", ""))
 
         with st.expander("DESENVOLVIMENTO E SAÚDE"):
@@ -64,9 +64,6 @@ if st.session_state.edit_mode:
             with col3:
                 objetivo_medicacao = st.text_input("Objetivo", value=dados_cadastro.get("objetivo_medicacao", ""))
             alergia = st.text_area("Alergia", value=dados_cadastro.get("alergia", ""))
-            alteracao_sensorial = st.text_area("Alteração sensorial", value=dados_cadastro.get("alteracao_sensorial", ""))
-            gatilhos_crises = st.text_area("Gatilhos para crises", value=dados_cadastro.get("gatilhos_crises", ""))
-            outras_infos_saude = st.text_area("Outras informações relevantes", value=dados_cadastro.get("outras_infos_saude", ""))
 
         with st.expander("ESCOLA E EQUIPE"):
             col1, col2 = st.columns(2)
@@ -126,16 +123,20 @@ if st.session_state.edit_mode:
                     "data_nascimento": data_nascimento.strftime('%Y-%m-%d'), "idade": idade, "principal_responsavel": principal_responsavel, "grau_parentesco": grau_parentesco,
                     "nome_escola": nome_escola, "ano_escolar": ano_escolar, "diagnostico": diagnostico, "comorbidades": comorbidades, "terapias": terapias,
                     "medico_responsavel": medico_responsavel, "contato_medico": contato_medico, "medicacao_atual": medicacao_atual, "horario_medicacao": horario_medicacao,
-                    "objetivo_medicacao": objetivo_medicacao, "alergia": alergia, "alteracao_sensorial": alteracao_sensorial, "gatilhos_crises": gatilhos_crises,
-                    "outras_infos_saude": outras_infos_saude, "prof_principal": prof_principal, "prof_principal_contato": prof_principal_contato,
-                    "acomp_escolar": acomp_escolar, "acomp_escolar_contato": acomp_escolar_contato, "comunicacao": comunicacao, "comunicacao_alt": comunicacao_alt,
-                    "fica_sozinho": fica_sozinho, "usa_banheiro": usa_banheiro, "bebe_agua": bebe_agua, "mobilidade_reduzida": mobilidade_reduzida,
-                    "costuma_crises": costuma_crises, "principais_gatilhos": principais_gatilhos, "como_regula": como_regula, "dificuldades": dificuldades,
-                    "potencialidades": potencialidades, "aval_multi": aval_multi, "dev_habilidades": dev_habilidades, "adapt_materiais": adapt_materiais,
-                    "adapt_curriculo": adapt_curriculo, "disciplinas_apoio": disciplinas_apoio,
+                    "objetivo_medicacao": objetivo_medicacao, "alergia": alergia, "prof_principal": prof_principal,
+                    "prof_principal_contato": prof_principal_contato, "acomp_escolar": acomp_escolar, "acomp_escolar_contato": acomp_escolar_contato,
+                    "comunicacao": comunicacao, "comunicacao_alt": comunicacao_alt, "fica_sozinho": fica_sozinho, "usa_banheiro": usa_banheiro,
+                    "bebe_agua": bebe_agua, "mobilidade_reduzida": mobilidade_reduzida, "costuma_crises": costuma_crises, "principais_gatilhos": principais_gatilhos,
+                    "como_regula": como_regula, "dificuldades": dificuldades, "potencialidades": potencialidades, "aval_multi": aval_multi,
+                    "dev_habilidades": dev_habilidades, "adapt_materiais": adapt_materiais, "adapt_curriculo": adapt_curriculo, "disciplinas_apoio": disciplinas_apoio,
                 }
                 salvar_dados_cadastro(nome_aluno, novos_dados_cadastro)
+                
+                if st.session_state.get("aprendiz_ativo") is None:
+                    st.session_state.aprendiz_ativo = {}
+                st.session_state.aprendiz_ativo['cadastro'] = novos_dados_cadastro
                 st.session_state.nome_aprendiz_ativo = nome_aluno
+                
                 st.session_state.edit_mode = False
                 st.success(f"Prontuário de '{nome_aluno}' salvo com sucesso!")
                 st.rerun()
@@ -165,19 +166,8 @@ else:
         col1, col2 = st.columns(2)
         col1.metric("Diagnóstico", dados_cadastro.get('diagnostico') or "Não informado")
         col2.metric("Comorbidades", dados_cadastro.get('comorbidades') or "Não informado")
-        
-    with st.container(border=True):
-        st.subheader("Autonomia")
-        col1, col2 = st.columns(2)
-        with col1:
-            st.write(f"**Utiliza comunicação alternativa?** {dados_cadastro.get('comunicacao_alt', 'N/A')}")
-        with col2:
-            st.write(f"**Costuma ter crises?** {dados_cadastro.get('costuma_crises', 'N/A')}")
-            
-    with st.container(border=True):
-        st.subheader("Avaliação Geral")
-        st.write(f"**Possui avaliação da equipe multi?** {dados_cadastro.get('aval_multi', 'N/A')}")
-        st.write(f"**Necessita de adaptação de materiais?** {dados_cadastro.get('adapt_materiais', 'N/A')}")
+
+    # ... (Adicione aqui os containers para visualizar TODAS as outras seções)
 
     st.write("")
     col1, col2, col3 = st.columns([1,1.2,1])
