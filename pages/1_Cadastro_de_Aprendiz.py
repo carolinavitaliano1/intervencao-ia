@@ -73,6 +73,25 @@ if st.session_state.edit_mode:
             gatilhos_crises = st.text_area("Gatilhos para crises", value=dados_cadastro.get("gatilhos_crises", ""))
             outras_infos_saude = st.text_area("Outras informações relevantes", value=dados_cadastro.get("outras_infos_saude", ""))
 
+         with st.expander("ESCOLA E EQUIPE"):
+            st.subheader("Contatos dos Profissionais")
+            col1, col2 = st.columns(2)
+            with col1:
+                prof_principal = st.text_input("Professor Principal", value=dados_cadastro.get("prof_principal", ""))
+                prof_principal_contato = st.text_input("Contato (Prof. Principal)", value=dados_cadastro.get("prof_principal_contato", ""))
+            with col2:
+                acomp_escolar = st.text_input("Acompanhante escolar", value=dados_cadastro.get("acomp_escolar", ""))
+                acomp_escolar_contato = st.text_input("Contato (Acomp. Escolar)", value=dados_cadastro.get("acomp_escolar_contato", ""))
+            st.markdown("---")
+            col3, col4 = st.columns(2)
+            with col3:
+                coord_pedagogica = st.text_input("Coordenação Pedagógica", value=dados_cadastro.get("coord_pedagogica", ""))
+                coord_pedagogica_contato = st.text_input("Contato (Coordenação)", value=dados_cadastro.get("coord_pedagogica_contato", ""))
+            with col4:
+                acomp_terapeutico = st.text_input("Acompanhante terapêutico", value=dados_cadastro.get("acomp_terapeutico", ""))
+                acomp_terapeutico_contato = st.text_input("Contato (Acomp. Terapêutico)", value=dados_cadastro.get("acomp_terapeutico_contato", ""))
+            prof_especialistas = st.text_area("Outros Professores Especialistas", value=dados_cadastro.get("prof_especialistas", ""))
+
         with st.expander("AUTONOMIA"):
             radio_opts_sim_nao = ["Sim", "Não"]
             comunicacao = st.text_area("Formas de Comunicação", value=dados_cadastro.get("comunicacao", ""))
