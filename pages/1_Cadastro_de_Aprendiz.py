@@ -1,62 +1,76 @@
 import streamlit as st
 import datetime
-import os
-from database_utils import salvar_dados_cadastro
+from database_utils import salvar_dados_cadastro, excluir_aprendiz
+from streamlit_extras.switch_page_button import switch_page
 
-st.set_page_config(layout="wide", page_title="Cadastro de Aprendiz")
-st.header("👤 Prontuário do Aprendiz")
+st.set_page_config(layout="wide", page_title="Prontuário do Aprendiz")
 
-if not st.session_state.get("nome_aprendiz_ativo"):
-    st.warning("Por favor, selecione um aprendiz na barra lateral para visualizar o prontuário.")
+if 'edit_mode' not in st.session_state:
+    st.session_state.edit_mode = False
+
+# Se não houver aprendiz ativo e não estivermos em modo de criação, avisa o usuário
+if not st.session_state.get("nome_aprendiz_ativo") and not st.session_state.edit_mode:
+    st.info("Clique em 'Cadastrar Novo Aprendiz' na barra lateral para começar.")
     st.stop()
 
-st.info(f"Visualizando dados de: **{st.session_state.nome_aprendiz_ativo}**")
-dados_cadastro = st.session_state.get("aprendiz_ativo", {}).get("cadastro", {})
+# --- MODO DE CRIAÇÃO/EDIÇÃO ---
+if st.session_state.edit_mode or not st.session_state.get("nome_aprendiz_ativo"):
+    st.header("📝 Dados do Aprendiz")
+    dados_cadastro = st.session_state.get("aprendiz_ativo", {}).get("cadastro", {})
+    nome_preenchido = st.session_state.get("nome_aprendiz_ativo", "")
 
-# Expander para editar os dados cadastrais
-with st.expander("Editar Dados Cadastrais"):
     with st.form("form_cadastro"):
-        nome_aluno = st.text_input("Nome do Aluno", value=st.session_state.nome_aprendiz_ativo, disabled=True)
-        
-        # --- SEUS CAMPOS DE CADASTRO AQUI ---
-        col1, col2 = st.columns(2)
-        with col1:
-            principal_responsavel = st.text_input("Principal responsável:", value=dados_cadastro.get("principal_responsavel", ""))
-            nome_escola = st.text_input("Nome da escola:", value=dados_cadastro.get("nome_escola", ""))
-        with col2:
-            parentesco_responsavel = st.text_input("Grau de parentesco do responsável:", value=dados_cadastro.get("parentesco_responsavel", ""))
-            ano_escolar = st.text_input("Ano escolar:", value=dados_cadastro.get("ano_escolar", ""))
+        nome_aluno = st.text_input("Nome Completo do Aluno*", value=nome_preenchido)
+        # ... Todos os seus campos de cadastro aqui ...
+        data_nasc = st.date_input("Data de Nascimento")
+        escola = st.text_input("Escola")
+        diagnosticos = st.text_area("Diagnósticos e Observações")
+        contato_familia = st.text_area("Contato e Observações da Família")
 
-        submitted = st.form_submit_button("Salvar Alterações no Cadastro")
+        submitted = st.form_submit_button("Salvar Prontuário")
         if submitted:
-            novos_dados_cadastro = {
-                "principal_responsavel": principal_responsavel, "nome_escola": nome_escola,
-                "parentesco_responsavel": parentesco_responsavel, "ano_escolar": ano_escolar,
-            }
-            salvar_dados_cadastro(nome_aluno, novos_dados_cadastro)
-            st.success(f"Dados cadastrais de '{nome_aluno}' atualizados com sucesso!")
-            # Atualiza o estado da sessão
-            st.session_state.aprendiz_ativo["cadastro"] = novos_dados_cadastro
+            if not nome_aluno:
+                st.error("O nome do aluno é obrigatório!")
+            else:
+                novos_dados_cadastro = {
+                    "data_nascimento": data_nasc.strftime("%d/%m/%Y"),
+                    "escola": escola,
+                    "diagnosticos": diagnosticos,
+                    "contato_familia": contato_familia
+                }
+                salvar_dados_cadastro(nome_aluno, novos_dados_cadastro)
+                st.session_state.nome_aprendiz_ativo = nome_aluno # Atualiza o nome ativo
+                st.session_state.edit_mode = False
+                st.success(f"Prontuário de '{nome_aluno}' salvo com sucesso!")
+                st.rerun()
 
-st.markdown("---")
-
-# --- NOVA SEÇÃO: HISTÓRICO DE AVALIAÇÕES ---
-st.subheader("Histórico de Avaliações")
-
-lista_avaliacoes = st.session_state.get("aprendiz_ativo", {}).get("avaliacoes", [])
-
-if not lista_avaliacoes:
-    st.info("Nenhuma avaliação foi registrada para este aprendiz.")
+# --- MODO DE VISUALIZAÇÃO ---
 else:
-    # Mostra as avaliações da mais recente para a mais antiga
-    for avaliacao in reversed(lista_avaliacoes):
-        data = avaliacao.get("data_avaliacao", "Data não registrada")
-        with st.expander(f"**Avaliação realizada em: {data}**"):
-            st.write("---")
-            st.write("**Comunicação Oral**")
-            st.write(f"1. Relata acontecimentos simples: **{avaliacao.get('hab1')}**")
-            # Adicione aqui outros campos importantes que você queira ver no resumo
-            
-            st.write("---")
-            st.write("**Observação Acadêmica (Português)**")
-            st.info(f"{avaliacao.get('portugues_acad', 'Nenhuma observação.')}")
+    st.header("Alunos Cadastrados")
+    dados_cadastro = st.session_state.get("aprendiz_ativo", {}).get("cadastro", {})
+    
+    with st.container(border=True):
+        st.subheader(st.session_state.nome_aprendiz_ativo)
+        st.write(f"**Data de Nascimento:** {dados_cadastro.get('data_nascimento', 'Não informado')}")
+        st.write(f"**Escola:** {dados_cadastro.get('escola', 'Não informado')}")
+        st.write("**Diagnósticos e Observações:**")
+        st.info(dados_cadastro.get('diagnosticos') or "Nenhuma observação.")
+        st.write("**Contato e Observações da Família:**")
+        st.info(dados_cadastro.get('contato_familia') or "Nenhum contato.")
+    
+    st.write("")
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        if st.button("📝 Editar Prontuário"):
+            st.session_state.edit_mode = True
+            st.rerun()
+    with col2:
+        if st.button("➕ Novo Plano (PEI)"):
+            switch_page("Plano de Ensino Individualizado (PEI)")
+    with col3:
+        if st.button("❌ Excluir Aluno", type="primary"):
+            if excluir_aprendiz(st.session_state.nome_aprendiz_ativo):
+                st.success(f"Aprendiz '{st.session_state.nome_aprendiz_ativo}' excluído.")
+                st.session_state.nome_aprendiz_ativo = None
+                st.session_state.aprendiz_ativo = None
+                st.rerun()
