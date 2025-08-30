@@ -25,6 +25,11 @@ st.set_page_config(
 
 # --- FUNÇÕES PARA SALVAR E CARREGAR DADOS ---
 DB_FILE = "aprendizes.json"
+UPLOAD_DIR = "uploads" # Pasta para salvar os arquivos anexados
+
+# Garante que o diretório de uploads exista
+if not os.path.exists(UPLOAD_DIR):
+    os.makedirs(UPLOAD_DIR)
 
 def carregar_dados():
     """Carrega os dados do arquivo JSON."""
@@ -95,6 +100,7 @@ elif pagina_selecionada == "Cadastro de Aprendiz":
     with st.form("cadastro_form", clear_on_submit=True):
         # --- SEÇÃO DADOS DO ESTUDANTE ---
         with st.expander("DADOS DO ESTUDANTE", expanded=True):
+            # ... (código desta seção como antes)
             col1, col2 = st.columns(2)
             with col1:
                 nome_aluno = st.text_input("Nome do aluno:")
@@ -114,6 +120,7 @@ elif pagina_selecionada == "Cadastro de Aprendiz":
 
         # --- SEÇÃO DESENVOLVIMENTO E SAÚDE ---
         with st.expander("DESENVOLVIMENTO E SAÚDE"):
+            # ... (código desta seção como antes)
             col1, col2, col3 = st.columns(3)
             with col1:
                 diagnostico = st.text_input("Diagnóstico:")
@@ -141,6 +148,7 @@ elif pagina_selecionada == "Cadastro de Aprendiz":
 
         # --- SEÇÃO ESCOLA E EQUIPE ---
         with st.expander("ESCOLA E EQUIPE"):
+            # ... (código desta seção como antes)
             col1, col2 = st.columns(2)
             with col1:
                 prof_principal = st.text_input("Professor Principal:")
@@ -155,6 +163,7 @@ elif pagina_selecionada == "Cadastro de Aprendiz":
 
         # --- SEÇÃO AUTONOMIA ---
         with st.expander("AUTONOMIA"):
+            # ... (código desta seção como antes)
             comunicacao = st.text_area("Comunicação:")
             comunicacao_alt = st.radio("Utiliza comunicação alternativa?", ("Sim", "Não"), horizontal=True)
             col1, col2, col3, col4 = st.columns(4)
@@ -175,6 +184,7 @@ elif pagina_selecionada == "Cadastro de Aprendiz":
         
         # --- SEÇÃO AVALIAÇÃO E POTENCIALIDADES ---
         with st.expander("AVALIAÇÃO E POTENCIALIDADES"):
+            # ... (código desta seção como antes)
             col1, col2 = st.columns(2)
             with col1:
                 dificuldades = st.text_area("Principais Dificuldades (restrições):")
@@ -185,13 +195,34 @@ elif pagina_selecionada == "Cadastro de Aprendiz":
             adapt_materiais = st.radio("Possui necessidade de adaptação de materiais?", ("Sim", "Não"), horizontal=True)
             adapt_curriculo = st.radio("Possui necessidade de adaptação de currículo?", ("Sim", "Não"), horizontal=True)
             disciplinas_apoio = st.text_area("Disciplinas que necessita de maior apoio:")
-        
+            
+            # --- MODIFICAÇÃO: Campo de upload adicionado aqui ---
+            anexos = st.file_uploader(
+                "Anexar Documentos e Avaliações (PDF, DOCX, JPG, PNG):",
+                accept_multiple_files=True,
+                type=['pdf', 'docx', 'jpg', 'png']
+            )
+
         # Botão para salvar
         submitted = st.form_submit_button("Salvar Cadastro do Aprendiz")
         if submitted:
             if not nome_aluno:
                 st.error("O campo 'Nome do aluno' é obrigatório para salvar!")
             else:
+                # Lógica para salvar os arquivos anexados
+                lista_nomes_arquivos = []
+                if anexos:
+                    # Cria um subdiretório para o aluno para evitar conflito de nomes
+                    aluno_dir = os.path.join(UPLOAD_DIR, nome_aluno.replace(" ", "_"))
+                    if not os.path.exists(aluno_dir):
+                        os.makedirs(aluno_dir)
+                    
+                    for anexo in anexos:
+                        file_path = os.path.join(aluno_dir, anexo.name)
+                        with open(file_path, "wb") as f:
+                            f.write(anexo.getbuffer())
+                        lista_nomes_arquivos.append(file_path)
+
                 dados_para_salvar = {
                     "nome_aluno": nome_aluno, "principal_responsavel": principal_responsavel, "nome_escola": nome_escola,
                     "data_pei": data_pei.strftime('%Y-%m-%d'), "tipo_documento": tipo_documento, "data_nascimento": data_nascimento.strftime('%Y-%m-%d'),
@@ -209,7 +240,8 @@ elif pagina_selecionada == "Cadastro de Aprendiz":
                     "tem_crises": tem_crises, "principais_gatilhos": principais_gatilhos, "como_regula": como_regula,
                     "dificuldades": dificuldades, "potencialidades": potencialidades, "aval_multi": aval_multi,
                     "desenv_habil": desenv_habil, "adapt_materiais": adapt_materiais, "adapt_curriculo": adapt_curriculo,
-                    "disciplinas_apoio": disciplinas_apoio
+                    "disciplinas_apoio": disciplinas_apoio,
+                    "anexos": lista_nomes_arquivos # Salva a lista de caminhos dos arquivos
                 }
                 
                 if salvar_dados(dados_para_salvar):
@@ -307,11 +339,26 @@ elif pagina_selecionada == "Avaliação de Habilidades":
 
 elif pagina_selecionada == "Plano de Ensino Individualizado (PEI)":
     st.header("📝 Plano de Ensino Individualizado (PEI)")
+    # ... (código desta página continua o mesmo)
     st.info("Utilize a base de dados completa da BNCC para fundamentar seu planejamento.")
     
     tab1, tab2 = st.tabs(["🎯 **Navegador da BNCC**", "💡 **Banco de Estratégias Clínicas**"])
-    # ... (O restante do código desta página permanece o mesmo)
+
+    with tab1:
+        etapa_ensino = st.selectbox(
+            "1. Selecione a Etapa de Ensino:",
+            options=list(BNCC_DATABASE.keys())
+        )
+        # ... (Restante do código da aba BNCC)
+
+    with tab2:
+        st.subheader("Sugestão de Estratégias por Função Cognitiva")
+        funcao_selecionada = st.selectbox("Selecione a função cognitiva a ser estimulada:", options=list(estrategias_por_funcao.keys()))
+        st.markdown(f"#### Estratégias para **{funcao_selecionada}**:")
+        with st.container(border=True):
+            for estrategia in estrategias_por_funcao[funcao_selecionada]:
+                st.markdown(f"- {estrategia}")
 
 elif pagina_selecionada == "Gerador de Atividades Adaptadas":
     st.header("🎨 Gerador de Atividades Adaptadas (Avançado)")
-    # ... (O restante do código desta página permanece o mesmo)
+    # ... (código mantido)
