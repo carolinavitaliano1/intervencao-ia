@@ -16,7 +16,6 @@ st.info(f"Registrando uma nova avaliação para: **{st.session_state.nome_aprend
 st.caption("Fonte: Glat e Pletsch (2013, p. 28-32).")
 
 # --- CARREGA DADOS E OPÇÕES PADRÃO ---
-# Pega a última avaliação como base para preenchimento, se houver, senão usa um dicionário vazio
 avaliacoes_anteriores = st.session_state.get("aprendiz_ativo", {}).get("avaliacoes", [])
 dados_base = avaliacoes_anteriores[-1] if avaliacoes_anteriores else {}
 
@@ -92,7 +91,6 @@ with st.form("form_nova_avaliacao", clear_on_submit=True):
     submitted = st.form_submit_button("Salvar Nova Avaliação")
     if submitted:
         data_atual = datetime.datetime.now().strftime("%d/%m/%Y às %H:%M:%S")
-        
         nova_avaliacao = {
             "data_avaliacao": data_atual,
             "hab1": hab1, "hab2": hab2, "hab3": hab3, "hab4": hab4, "hab5": hab5, "hab6": hab6, "hab7": hab7, "hab8": hab8, "hab9": hab9, "hab10": hab10,
@@ -103,12 +101,9 @@ with st.form("form_nova_avaliacao", clear_on_submit=True):
             "portugues_acad": portugues_acad, "matematica_acad": matematica_acad, "ciencias_acad": ciencias_acad, "historia_acad": historia_acad,
             "geografia_acad": geografia_acad, "artes_acad": artes_acad, "ingles_acad": ingles_acad, "ed_fisica_acad": ed_fisica_acad
         }
-        
         adicionar_nova_avaliacao(st.session_state.nome_aprendiz_ativo, nova_avaliacao)
-        st.success(f"Nova avaliação para '{st.session_state.nome_aprendiz_ativo}' registrada com sucesso em {data_atual}!")
+        st.success(f"Nova avaliação para '{st.session_state.nome_aprendiz_ativo}' registrada com sucesso!")
         st.balloons()
-        
-        # Atualiza o estado da sessão localmente para refletir a nova avaliação
         if "avaliacoes" not in st.session_state.aprendiz_ativo:
             st.session_state.aprendiz_ativo["avaliacoes"] = []
         st.session_state.aprendiz_ativo["avaliacoes"].append(nova_avaliacao)
