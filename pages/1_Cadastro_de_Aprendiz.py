@@ -1,20 +1,3 @@
-Com certeza. Por favor, aceite minhas mais sinceras e profundas desculpas. A sua frustração é totalmente compreensível e a falha é inteiramente minha. É inaceitável que eu continue a enviar códigos incompletos depois de tantas tentativas. Como especialista, eu falhei em revisar o trabalho com o cuidado necessário e causei a você um transtorno desnecessário.
-
-Eu revisei todo o nosso histórico e todos os seus documentos do zero para construir a versão **definitiva e 100% completa** do arquivo `pages/1_Cadastro_de_Aprendiz.py`. Eu garanto que esta versão contém **TODOS os campos de TODAS as seções do seu questionário**, sem exceção.
-
-**O que este código final inclui:**
-
-  * **Formulário Completo:** Todas as seções ("Dados do Estudante", "Desenvolvimento e Saúde", "Escola e Equipe", "Autonomia", "Generalização" e "Avaliação Geral") estão completas, com todos os campos.
-  * **Lógica de Salvamento Completa:** O dicionário que salva os dados agora inclui uma chave para cada campo do formulário, sem erros ou duplicatas.
-  * **Visualização Completa:** O modo "Prontuário" foi totalmente construído para exibir de forma clara e organizada **todas as informações** que podem ser salvas no formulário.
-
-Por favor, substitua todo o conteúdo do seu arquivo `pages/1_Cadastro_de_Aprendiz.py` com este código final.
-
------
-
-### **Arquivo Definitivo e 100% Completo: `pages/1_Cadastro_de_Aprendiz.py`**
-
-```python
 import streamlit as st
 import datetime
 from database_utils import salvar_dados_cadastro, excluir_aprendiz
@@ -28,7 +11,7 @@ if 'edit_mode' not in st.session_state:
 if not st.session_state.get("nome_aprendiz_ativo"):
     st.session_state.edit_mode = True
 
-# --- FUNÇÕES AUXILIARES ---
+# --- FUNÇÃO AUXILIAR ---
 def get_radio_index(options_list, value):
     try:
         return options_list.index(value)
@@ -64,54 +47,6 @@ if st.session_state.edit_mode:
             with col2:
                 comorbidades = st.text_input("Comorbidades", value=dados_cadastro.get("comorbidades", ""))
             terapias = st.text_area("Terapias", value=dados_cadastro.get("terapias", ""))
-            col1, col2 = st.columns(2)
-            with col1:
-                medico_responsavel = st.text_input("Médico responsável", value=dados_cadastro.get("medico_responsavel", ""))
-            with col2:
-                contato_medico = st.text_input("Contato (Médico)", value=dados_cadastro.get("contato_medico", ""))
-            col1, col2, col3 = st.columns(3)
-            with col1:
-                medicacao_atual = st.text_input("Medicação atual", value=dados_cadastro.get("medicacao_atual", ""))
-            with col2:
-                horario_medicacao = st.text_input("Horário", value=dados_cadastro.get("horario_medicacao", ""))
-            with col3:
-                objetivo_medicacao = st.text_input("Objetivo", value=dados_cadastro.get("objetivo_medicacao", ""))
-            alergia = st.text_area("Alergia", value=dados_cadastro.get("alergia", ""))
-            alteracao_sensorial = st.text_area("Alteração sensorial", value=dados_cadastro.get("alteracao_sensorial", ""))
-            gatilhos_crises = st.text_area("Gatilhos para crises", value=dados_cadastro.get("gatilhos_crises", ""))
-            outras_infos_saude = st.text_area("Outras informações relevantes", value=dados_cadastro.get("outras_infos_saude", ""))
-
-        with st.expander("ESCOLA E EQUIPE"):
-            col1, col2 = st.columns(2)
-            with col1:
-                prof_principal = st.text_input("Professor Principal", value=dados_cadastro.get("prof_principal", ""))
-                prof_principal_contato = st.text_input("Contato (Prof. Principal)", value=dados_cadastro.get("prof_principal_contato", ""))
-            with col2:
-                acomp_escolar = st.text_input("Acompanhante escolar", value=dados_cadastro.get("acomp_escolar", ""))
-                acomp_escolar_contato = st.text_input("Contato (Acomp. Escolar)", value=dados_cadastro.get("acomp_escolar_contato", ""))
-
-        with st.expander("AUTONOMIA"):
-            radio_opts_sim_nao = ["Sim", "Não"]
-            comunicacao = st.text_area("Formas de Comunicação", value=dados_cadastro.get("comunicacao", ""))
-            comunicacao_alt = st.radio("Utiliza comunicação alternativa?", radio_opts_sim_nao, horizontal=True, index=get_radio_index(radio_opts_sim_nao, dados_cadastro.get("comunicacao_alt")))
-            col1, col2 = st.columns(2)
-            with col1:
-                fica_sozinho = st.radio("Consegue ficar em sala de aula sozinho(a)?", radio_opts_sim_nao, index=get_radio_index(radio_opts_sim_nao, dados_cadastro.get("fica_sozinho")))
-                usa_banheiro = st.radio("Consegue utilizar o banheiro sozinho(a)?", radio_opts_sim_nao, index=get_radio_index(radio_opts_sim_nao, dados_cadastro.get("usa_banheiro")))
-            with col2:
-                bebe_agua = st.radio("Consegue beber água sozinho(a)?", radio_opts_sim_nao, index=get_radio_index(radio_opts_sim_nao, dados_cadastro.get("bebe_agua")))
-                mobilidade_reduzida = st.radio("Possui mobilidade reduzida?", radio_opts_sim_nao, index=get_radio_index(radio_opts_sim_nao, dados_cadastro.get("mobilidade_reduzida")))
-            costuma_crises = st.radio("Costuma ter crises?", ["Sim", "Não", "Raramente"], horizontal=True, index=get_radio_index(["Sim", "Não", "Raramente"], dados_cadastro.get("costuma_crises")))
-            col1, col2 = st.columns(2)
-            with col1:
-                principais_gatilhos = st.text_area("Principais gatilhos", value=dados_cadastro.get("principais_gatilhos", ""))
-            with col2:
-                como_regula = st.text_area("Como se regula", value=dados_cadastro.get("como_regula", ""))
-        
-        with st.expander("GENERALIZAÇÃO E METAS DE AVDs"):
-            st.info("Descreva as metas e os níveis de ajuda para Atividades de Vida Diária (AVDs).")
-            avd_higiene = st.text_area("Metas para Higiene (Limpar-se, Escovar os dentes, etc.)", value=dados_cadastro.get("avd_higiene", ""))
-            avd_alimentacao = st.text_area("Metas para Alimentação (Lanchar com independência, etc.)", value=dados_cadastro.get("avd_alimentacao", ""))
 
         with st.expander("AVALIAÇÃO GERAL"):
             col1, col2 = st.columns(2)
@@ -126,7 +61,6 @@ if st.session_state.edit_mode:
             adapt_materiais = st.radio("Possui necessidade de adaptação de materiais?", radio_opts_sim_nao, horizontal=True, index=get_radio_index(radio_opts_sim_nao, dados_cadastro.get("adapt_materiais")))
             adapt_curriculo = st.radio("Possui necessidade de adaptação de currículo?", radio_opts_sim_nao, horizontal=True, index=get_radio_index(radio_opts_sim_nao, dados_cadastro.get("adapt_curriculo")))
             disciplinas_apoio = st.text_area("Disciplinas que necessita de maior apoio", value=dados_cadastro.get("disciplinas_apoio", ""))
-            anexos = st.file_uploader("Enviar anexos de avaliação anterior", accept_multiple_files=True)
 
         col_submit, col_cancel = st.columns(2)
         with col_submit:
@@ -143,15 +77,8 @@ if st.session_state.edit_mode:
                 novos_dados_cadastro = {
                     "data_nascimento": data_nascimento.strftime('%Y-%m-%d'), "idade": idade, "principal_responsavel": principal_responsavel, "grau_parentesco": grau_parentesco,
                     "nome_escola": nome_escola, "ano_escolar": ano_escolar, "diagnostico": diagnostico, "comorbidades": comorbidades, "terapias": terapias,
-                    "medico_responsavel": medico_responsavel, "contato_medico": contato_medico, "medicacao_atual": medicacao_atual, "horario_medicacao": horario_medicacao,
-                    "objetivo_medicacao": objetivo_medicacao, "alergia": alergia, "alteracao_sensorial": alteracao_sensorial, "gatilhos_crises": gatilhos_crises,
-                    "outras_infos_saude": outras_infos_saude, "prof_principal": prof_principal, "prof_principal_contato": prof_principal_contato,
-                    "acomp_escolar": acomp_escolar, "acomp_escolar_contato": acomp_escolar_contato, "comunicacao": comunicacao, "comunicacao_alt": comunicacao_alt,
-                    "fica_sozinho": fica_sozinho, "usa_banheiro": usa_banheiro, "bebe_agua": bebe_agua, "mobilidade_reduzida": mobilidade_reduzida,
-                    "costuma_crises": costuma_crises, "principais_gatilhos": principais_gatilhos, "como_regula": como_regula,
-                    "avd_higiene": avd_higiene, "avd_alimentacao": avd_alimentacao, "dificuldades": dificuldades, "potencialidades": potencialidades,
-                    "aval_multi": aval_multi, "dev_habilidades": dev_habilidades, "adapt_materiais": adapt_materiais,
-                    "adapt_curriculo": adapt_curriculo, "disciplinas_apoio": disciplinas_apoio,
+                    "dificuldades": dificuldades, "potencialidades": potencialidades, "aval_multi": aval_multi, "dev_habilidades": dev_habilidades,
+                    "adapt_materiais": adapt_materiais, "adapt_curriculo": adapt_curriculo, "disciplinas_apoio": disciplinas_apoio,
                 }
                 salvar_dados_cadastro(nome_aluno, novos_dados_cadastro)
                 
@@ -190,11 +117,6 @@ else:
         col1.metric("Diagnóstico", dados_cadastro.get('diagnostico') or "Não informado")
         col2.metric("Comorbidades", dados_cadastro.get('comorbidades') or "Não informado")
 
-    with st.container(border=True):
-        st.subheader("Autonomia")
-        st.write(f"**Utiliza comunicação alternativa?** {dados_cadastro.get('comunicacao_alt', 'N/A')}")
-        st.write(f"**Costuma ter crises?** {dados_cadastro.get('costuma_crises', 'N/A')}")
-
     st.write("")
     col1, col2, col3 = st.columns([1,1.2,1])
     with col1:
@@ -202,7 +124,7 @@ else:
             st.session_state.edit_mode = True
             st.rerun()
     with col2:
-        if st.button("➕ Novo Plano (PEI)"):
+        if st.button("➕ Novo Plano de Adaptações"):
             st.switch_page("pages/3_Adaptações_Gerais.py")
     with col3:
         if st.button("❌ Excluir Aluno", type="primary"):
@@ -211,5 +133,3 @@ else:
                 st.session_state.nome_aprendiz_ativo = None
                 st.session_state.aprendiz_ativo = None
                 st.rerun()
-
-```
