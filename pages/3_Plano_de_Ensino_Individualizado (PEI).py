@@ -50,7 +50,7 @@ if not st.session_state.get("nome_aprendiz_ativo"):
 st.info(f"Criando um novo PEI para: **{st.session_state.nome_aprendiz_ativo}**")
 
 # Botão e aviso da IA (fora do formulário)
-st.info("As sugestões da IA são geradas com base nas informações do Cadastro do Aprendiz e na avaliação de habilidades mais recente.")
+st.info("As sugestões da IA são geradas com base nas informações do Cadastro e na Avaliação de Habilidades mais recente.")
 if st.button("🤖 Gerar Sugestões com IA para Objetivos e Adaptações"):
     prompt, erro = criar_prompt_pei(st.session_state.get("aprendiz_ativo", {}))
     if erro:
@@ -58,7 +58,7 @@ if st.button("🤖 Gerar Sugestões com IA para Objetivos e Adaptações"):
     else:
         with st.spinner("Aguarde, a IA está analisando os dados e gerando sugestões..."):
             st.session_state.objetivos_gerados = "1. Desenvolver a autonomia na leitura de palavras simples.\n2. Aprimorar o raciocínio lógico para resolução de problemas matemáticos básicos."
-            st.session_state.adapt_sala_gerados = "1. Utilizar material dourado e ábaco nas aulas de matemática.\n2. Apresentar instruções em etapas (uma de cada vez)."
+            st.session_state.adapt_sala_gerados = "1. Utilizar material dourado e ábaco nas aulas de matemática.\n2. Apresentar instruções em etapas (uma de cada vez).\n3. Oferecer textos com letras maiores e espaçamento duplo."
             st.session_state.adapt_avaliacoes_gerados = "1. Permitir tempo extra para a conclusão das provas.\n2. Ler os enunciados das questões em voz alta para o aluno."
         st.success("Sugestões geradas! Os campos na Etapa 1 foram preenchidos.")
 
