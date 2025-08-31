@@ -3,17 +3,15 @@ import datetime
 from database_utils import adicionar_novo_pei
 from bncc_fundamental import FUNDAMENTAL_DB
 
-# --- FUNÇÕES AUXILIARES ---
-def buscar_habilidade_bncc(codigo):
-    codigo = codigo.upper().strip()
-    for ano, componentes in FUNDAMENTAL_DB.items():
-        for componente, habilidades in componentes.items():
-            for habilidade in habilidades:
-                if habilidade["codigo"] == codigo:
-                    return habilidade
+# --- FUNÇÃO PARA BUSCAR HABILIDADES NA BNCC ---
+def buscar_habilidade_por_descricao(descricao_selecionada, ano, componente):
+    if ano in FUNDAMENTAL_DB and componente in FUNDAMENTAL_DB[ano]:
+        for habilidade in FUNDAMENTAL_DB[ano][componente]:
+            if habilidade["descricao"] == descricao_selecionada:
+                return habilidade
     return None
 
-# --- INICIALIZAÇÃO E LÓGICA DA PÁGINA ---
+# --- LÓGICA DA PÁGINA ---
 st.set_page_config(layout="wide", page_title="Plano de Ensino Individualizado")
 st.header("📝 Plano de Ensino Individualizado (PEI)")
 
@@ -23,64 +21,73 @@ if not st.session_state.get("nome_aprendiz_ativo"):
 
 st.info(f"Criando um novo PEI para: **{st.session_state.nome_aprendiz_ativo}**")
 
-# Inicializa a lista de habilidades para o PEI atual na sessão
-if 'pei_habilidades_atuais' not in st.session_state:
-    st.session_state.pei_habilidades_atuais = []
+# Inicializa o estado da sessão para os campos do formulário
+if 'pei_objetivos_gerais' not in st.session_state: st.session_state.pei_objetivos_gerais = ""
+if 'pei_adapt_sala' not in st.session_state: st.session_state.pei_adapt_sala = ""
+if 'pei_adapt_avaliacoes' not in st.session_state: st.session_state.pei_adapt_avaliacoes = ""
+if 'pei_habilidades_selecionadas' not in st.session_state: st.session_state.pei_habilidades_selecionadas = []
 
-# --- ÁREA DE BUSCA E ADIÇÃO DE HABILIDADES (FORA DO FORMULÁRIO PRINCIPAL) ---
-st.subheader("ETAPA 1: Selecionar Habilidades (BNCC)")
-col1, col2 = st.columns([3, 1])
-with col1:
-    codigo_input = st.text_input("Digite o código da habilidade (Ex: EF01LP05)", key="codigo_input")
-with col2:
-    st.write("‎") # Espaçamento
-    if st.button("Adicionar Habilidade"):
-        if codigo_input:
-            habilidade_encontrada = buscar_habilidade_bncc(codigo_input)
-            if habilidade_encontrada:
-                # Verifica se a habilidade já foi adicionada
-                if any(h['codigo'] == habilidade_encontrada['codigo'] for h in st.session_state.pei_habilidades_atuais):
-                    st.warning(f"A habilidade {habilidade_encontrada['codigo']} já foi adicionada.")
-                else:
-                    st.session_state.pei_habilidades_atuais.append({
-                        "codigo": habilidade_encontrada['codigo'],
-                        "descricao": habilidade_encontrada['descricao'],
-                        "estrategia": "",
-                        "data_inicio": "",
-                        "desempenho": ""
-                    })
-                    st.success(f"Habilidade {habilidade_encontrada['codigo']} adicionada ao plano!")
-            else:
-                st.error(f"Código '{codigo_input}' não encontrado.")
-            # Limpa o campo de input
-            st.session_state.codigo_input = ""
-
-
-# --- FORMULÁRIO PRINCIPAL PARA SALVAR O PEI ---
 with st.form("form_pei"):
-    st.subheader("ETAPA 2: Detalhar o Plano")
     
-    # Renderiza as habilidades que foram adicionadas à sessão
-    if not st.session_state.pei_habilidades_atuais:
-        st.info("Nenhuma habilidade adicionada ao plano ainda. Use o campo acima para começar.")
-    else:
-        st.write("Preencha os detalhes para cada habilidade selecionada:")
-        for i, habilidade in enumerate(st.session_state.pei_habilidades_atuais):
-            with st.container(border=True):
-                st.success(f"**{habilidade['codigo']}**: {habilidade['descricao']}")
-                
-                # Cria campos de input para cada detalhe da habilidade
-                habilidade['estrategia'] = st.text_area("Estratégia", key=f"estrategia_{i}", height=100)
-                col_data, col_desempenho = st.columns(2)
-                with col_data:
-                    habilidade['data_inicio'] = st.text_input("Data de Início e Duração", key=f"data_{i}")
-                with col_desempenho:
-                    habilidade['desempenho'] = st.selectbox("Desempenho", options=["Não iniciado", "Em andamento", "Alcançado com apoio", "Alcançado com autonomia"], key=f"desempenho_{i}")
+    with st.expander("ETAPA 1: OBJETIVOS E ADAPTAÇÕES GERAIS", expanded=True):
+        objetivos_gerais = st.text_area("Objetivos Acadêmicos Gerais", height=150)
+        st.subheader("Adaptações Gerais Acadêmicas")
+        col1, col2 = st.columns(2)
+        with col1:
+            adapt_sala = st.text_area("Adaptações de conteúdo em sala", height=200)
+        with col2:
+            adapt_avaliacoes = st.text_area("Adaptações em avaliações", height=200)
 
-    st.markdown("---")
+    with st.expander("ETAPA 2: OBJETIVOS POR DISCIPLINA (BNCC)", expanded=True):
+        st.write("Navegue e selecione as habilidades da BNCC para incluir no plano.")
+        
+        # Filtros de seleção
+        anos_disponiveis = list(FUNDAMENTAL_DB.keys())
+        ano_selecionado = st.selectbox("1. Selecione o Ano Escolar:", anos_disponiveis)
+        
+        componentes_disponiveis = list(FUNDAMENTAL_DB[ano_selecionado].keys())
+        componente_selecionado = st.selectbox("2. Selecione o Componente Curricular (Matéria):", componentes_disponiveis)
+        
+        # Gera a lista de habilidades para a seleção
+        habilidades_disponiveis = [h["descricao"] for h in FUNDAMENTAL_DB[ano_selecionado][componente_selecionado]]
+        
+        habilidades_marcadas = st.multiselect(
+            "3. Marque as habilidades que deseja trabalhar:",
+            options=habilidades_disponiveis
+        )
+        
+        st.markdown("---")
+        st.write("Preencha os detalhes para cada habilidade selecionada abaixo:")
+
+        habilidades_detalhadas = []
+        if habilidades_marcadas:
+            for desc in habilidades_marcadas:
+                habilidade_obj = buscar_habilidade_por_descricao(desc, ano_selecionado, componente_selecionado)
+                if habilidade_obj:
+                    with st.container(border=True):
+                        st.success(f"**{habilidade_obj['codigo']}**: {habilidade_obj['descricao']}")
+                        
+                        estrategia = st.text_area("Estratégia", key=f"estrategia_{habilidade_obj['codigo']}", height=100)
+                        col_data, col_desempenho = st.columns(2)
+                        with col_data:
+                            data_inicio = st.text_input("Data de Início e Duração", key=f"data_{habilidade_obj['codigo']}")
+                        with col_desempenho:
+                            desempenho = st.selectbox("Desempenho", options=["Não iniciado", "Em andamento", "Alcançado com apoio", "Alcançado com autonomia"], key=f"desempenho_{habilidade_obj['codigo']}")
+                        
+                        habilidades_detalhadas.append({
+                            "codigo": habilidade_obj['codigo'],
+                            "descricao": habilidade_obj['descricao'],
+                            "estrategia": estrategia,
+                            "data_inicio": data_inicio,
+                            "desempenho": desempenho
+                        })
+
     with st.expander("ETAPA 3: OBSERVAÇÕES E FINALIZAÇÃO"):
         observacoes = st.text_area("Observações Gerais", height=200)
+        ajustes_proximo_pei = st.text_area("Ajustes para o Próximo PEI", height=200)
+        st.markdown("---")
         redigido_por = st.text_input("Este documento foi redigido por")
+        data_finalizacao = st.date_input("Data de Finalização")
 
     submitted = st.form_submit_button("Salvar PEI Completo")
     if submitted:
@@ -88,15 +95,16 @@ with st.form("form_pei"):
         
         novo_pei = {
             "data_criacao": data_atual,
-            "habilidades_plano": st.session_state.pei_habilidades_atuais,
+            "objetivos_gerais": objetivos_gerais,
+            "adapt_sala": adapt_sala,
+            "adapt_avaliacoes": adapt_avaliacoes,
+            "habilidades_plano": habilidades_detalhadas,
             "observacoes": observacoes,
+            "ajustes_proximo_pei": ajustes_proximo_pei,
             "redigido_por": redigido_por,
+            "data_finalizacao": data_finalizacao.strftime('%d/%m/%Y'),
         }
         
         adicionar_novo_pei(st.session_state.nome_aprendiz_ativo, novo_pei)
-        
-        # Limpa a lista de habilidades da sessão para o próximo PEI
-        st.session_state.pei_habilidades_atuais = []
-        
         st.success(f"Novo PEI para '{st.session_state.nome_aprendiz_ativo}' salvo com sucesso!")
         st.balloons()
