@@ -64,6 +64,9 @@ if st.session_state.edit_mode:
             with col3:
                 objetivo_medicacao = st.text_input("Objetivo", value=dados_cadastro.get("objetivo_medicacao", ""))
             alergia = st.text_area("Alergia", value=dados_cadastro.get("alergia", ""))
+            alteracao_sensorial = st.text_area("Alteração sensorial", value=dados_cadastro.get("alteracao_sensorial", ""))
+            gatilhos_crises = st.text_area("Gatilhos para crises", value=dados_cadastro.get("gatilhos_crises", ""))
+            outras_infos_saude = st.text_area("Outras informações relevantes", value=dados_cadastro.get("outras_infos_saude", ""))
 
         with st.expander("ESCOLA E EQUIPE"):
             col1, col2 = st.columns(2)
@@ -91,6 +94,11 @@ if st.session_state.edit_mode:
                 principais_gatilhos = st.text_area("Principais gatilhos", value=dados_cadastro.get("principais_gatilhos", ""))
             with col2:
                 como_regula = st.text_area("Como se regula", value=dados_cadastro.get("como_regula", ""))
+        
+        with st.expander("GENERALIZAÇÃO E METAS DE AVDs"):
+            st.info("Descreva as metas e os níveis de ajuda para Atividades de Vida Diária (AVDs).")
+            avd_higiene = st.text_area("Metas para Higiene (Limpar-se, Escovar os dentes, etc.)", value=dados_cadastro.get("avd_higiene", ""))
+            avd_alimentacao = st.text_area("Metas para Alimentação (Lanchar com independência, etc.)", value=dados_cadastro.get("avd_alimentacao", ""))
 
         with st.expander("AVALIAÇÃO GERAL"):
             col1, col2 = st.columns(2)
@@ -123,12 +131,14 @@ if st.session_state.edit_mode:
                     "data_nascimento": data_nascimento.strftime('%Y-%m-%d'), "idade": idade, "principal_responsavel": principal_responsavel, "grau_parentesco": grau_parentesco,
                     "nome_escola": nome_escola, "ano_escolar": ano_escolar, "diagnostico": diagnostico, "comorbidades": comorbidades, "terapias": terapias,
                     "medico_responsavel": medico_responsavel, "contato_medico": contato_medico, "medicacao_atual": medicacao_atual, "horario_medicacao": horario_medicacao,
-                    "objetivo_medicacao": objetivo_medicacao, "alergia": alergia, "prof_principal": prof_principal,
-                    "prof_principal_contato": prof_principal_contato, "acomp_escolar": acomp_escolar, "acomp_escolar_contato": acomp_escolar_contato,
-                    "comunicacao": comunicacao, "comunicacao_alt": comunicacao_alt, "fica_sozinho": fica_sozinho, "usa_banheiro": usa_banheiro,
-                    "bebe_agua": bebe_agua, "mobilidade_reduzida": mobilidade_reduzida, "costuma_crises": costuma_crises, "principais_gatilhos": principais_gatilhos,
-                    "como_regula": como_regula, "dificuldades": dificuldades, "potencialidades": potencialidades, "aval_multi": aval_multi,
-                    "dev_habilidades": dev_habilidades, "adapt_materiais": adapt_materiais, "adapt_curriculo": adapt_curriculo, "disciplinas_apoio": disciplinas_apoio,
+                    "objetivo_medicacao": objetivo_medicacao, "alergia": alergia, "alteracao_sensorial": alteracao_sensorial, "gatilhos_crises": gatilhos_crises,
+                    "outras_infos_saude": outras_infos_saude, "prof_principal": prof_principal, "prof_principal_contato": prof_principal_contato,
+                    "acomp_escolar": acomp_escolar, "acomp_escolar_contato": acomp_escolar_contato, "comunicacao": comunicacao, "comunicacao_alt": comunicacao_alt,
+                    "fica_sozinho": fica_sozinho, "usa_banheiro": usa_banheiro, "bebe_agua": bebe_agua, "mobilidade_reduzida": mobilidade_reduzida,
+                    "costuma_crises": costuma_crises, "principais_gatilhos": principais_gatilhos, "como_regula": como_regula,
+                    "avd_higiene": avd_higiene, "avd_alimentacao": avd_alimentacao, "dificuldades": dificuldades, "potencialidades": potencialidades,
+                    "aval_multi": aval_multi, "dev_habilidades": dev_habilidades, "adapt_materiais": adapt_materiais,
+                    "adapt_curriculo": adapt_curriculo, "disciplinas_apoio": disciplinas_apoio,
                 }
                 salvar_dados_cadastro(nome_aluno, novos_dados_cadastro)
                 
@@ -166,23 +176,14 @@ else:
         col1, col2 = st.columns(2)
         col1.metric("Diagnóstico", dados_cadastro.get('diagnostico') or "Não informado")
         col2.metric("Comorbidades", dados_cadastro.get('comorbidades') or "Não informado")
-
-    # ... (Adicione aqui os containers para visualizar TODAS as outras seções)
-# COLE ESTE BLOCO NO ARQUIVO 1_Cadastro_de_Aprendiz.py
+    
     with st.container(border=True):
-        st.subheader("Histórico de Planos de Ensino (PEIs)")
-        lista_peis = st.session_state.get("aprendiz_ativo", {}).get("peis", [])
+        st.subheader("Autonomia")
+        st.write(f"**Utiliza comunicação alternativa?** {dados_cadastro.get('comunicacao_alt', 'N/A')}")
+        st.write(f"**Costuma ter crises?** {dados_cadastro.get('costuma_crises', 'N/A')}")
 
-        if not lista_peis:
-            st.info("Nenhum PEI foi registrado para este aprendiz.")
-        else:
-            for pei in reversed(lista_peis):
-                data = pei.get("data_criacao", "Data não registrada")
-                disciplina = pei.get("disciplina", "Não informada")
-                with st.expander(f"**PEI de {disciplina} - Criado em: {data}**"):
-                    st.write(f"**Objetivos Gerais:** {pei.get('objetivos_gerais')}")
-                    st.write(f"**Códigos BNCC:** {pei.get('codigos_bncc')}")
-                    st.write("---")
+    # ... (Adicione outros containers para visualizar todas as informações)
+
     st.write("")
     col1, col2, col3 = st.columns([1,1.2,1])
     with col1:
