@@ -5,9 +5,11 @@ DB_FILE = "aprendizes.json"
 
 def carregar_dados():
     if not os.path.exists(DB_FILE): return {}
-    with open(DB_FILE, 'r', encoding='utf-8') as f:
-        try: return json.load(f)
-        except json.JSONDecodeError: return {}
+    try:
+        with open(DB_FILE, 'r', encoding='utf-8') as f:
+            return json.load(f)
+    except (json.JSONDecodeError, FileNotFoundError):
+        return {}
 
 def salvar_dados_cadastro(nome_aprendiz, dados_cadastro):
     aprendizes = carregar_dados()
