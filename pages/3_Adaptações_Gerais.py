@@ -1,6 +1,7 @@
 import streamlit as st
 import datetime
 from database_utils import adicionar_plano_adaptacoes
+from auth import enforce_login
 
 # --- FUNÇÃO PARA GERAR O PROMPT PARA A IA ---
 def criar_prompt_ia(dados_aprendiz):
@@ -51,6 +52,7 @@ def criar_prompt_ia(dados_aprendiz):
 
 # --- LÓGICA DA PÁGINA ---
 st.set_page_config(layout="wide", page_title="Adaptações Gerais")
+enforce_login()
 st.header("Plano de Adaptações Gerais")
 
 if not st.session_state.get("nome_aprendiz_ativo"):

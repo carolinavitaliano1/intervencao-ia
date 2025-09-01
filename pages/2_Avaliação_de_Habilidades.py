@@ -1,9 +1,11 @@
 import streamlit as st
 import datetime
 from database_utils import adicionar_nova_avaliacao
+from auth import enforce_login
 
 # --- CONFIGURAÇÃO DA PÁGINA ---
 st.set_page_config(layout="wide", page_title="Avaliação de Habilidades")
+enforce_login()
 
 st.header("📝 Registrar Nova Avaliação de Habilidades")
 

@@ -1,11 +1,15 @@
 import streamlit as st
 from database_utils import carregar_dados
+from auth import enforce_login
 
 st.set_page_config(
     layout="wide",
     page_title="INTERVENÇÃO IA",
     page_icon="🧠"
 )
+
+# Proteção por login
+enforce_login()
 
 if 'aprendiz_ativo' not in st.session_state:
     st.session_state.aprendiz_ativo = None

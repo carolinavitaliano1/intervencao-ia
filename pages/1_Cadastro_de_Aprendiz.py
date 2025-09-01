@@ -1,9 +1,11 @@
 import streamlit as st
 import datetime
 from database_utils import salvar_dados_cadastro, excluir_aprendiz
+from auth import enforce_login
 
 # --- CONFIGURAÇÃO DA PÁGINA E ESTADO ---
 st.set_page_config(layout="wide", page_title="Prontuário do Aprendiz")
+enforce_login()
 
 if 'edit_mode' not in st.session_state:
     st.session_state.edit_mode = False
