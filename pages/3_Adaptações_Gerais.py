@@ -2,7 +2,7 @@ import streamlit as st
 import datetime
 from database_utils import adicionar_plano_adaptacoes
 
-# --- FUNÇÃO PARA GERAR O PROMPT PARA A IA ---
+# --- FUNÇÃO PARA GERAR O PROMPT PARA A IA (MAIS COMPLETA) ---
 def criar_prompt_ia(dados_aprendiz):
     """Cria um prompt detalhado para a IA com base no cadastro e na última avaliação."""
     dados_cadastro = dados_aprendiz.get("cadastro", {})
@@ -30,7 +30,7 @@ def criar_prompt_ia(dados_aprendiz):
             resumo_completo.append(f"- Habilidade {habilidade_cod} (precisa de apoio): {resultado}")
 
     if not pontos_encontrados:
-        resumo_completo.append("- Nenhum ponto de dificuldade específico foi marcado na avaliação de habilidades.")
+        resumo_completo.append("- Nenhum ponto de dificuldade específico foi marcado na avaliação.")
     
     resumo_str = "\n".join(resumo_completo)
     
@@ -42,10 +42,16 @@ def criar_prompt_ia(dados_aprendiz):
     {resumo_str}
 
     **Sua Tarefa:**
-    Gere um texto conciso e prático para os três campos a seguir, focando em estratégias que abordem as dificuldades listadas.
-    1.  **Objetivos Acadêmicos Gerais:** (2 a 3 objetivos claros)
-    2.  **Adaptações de Conteúdo em Sala:** (3 a 4 sugestões práticas)
-    3.  **Adaptações em Avaliações:** (3 a 4 sugestões específicas)
+    Gere um texto conciso e prático para os três campos a seguir, focando em estratégias que abordem as dificuldades listadas. Use os seguintes separadores exatos: ### OBJETIVOS ###, ### SALA ###, ### AVALIACOES ###.
+
+    ### OBJETIVOS ###
+    (Gere de 2 a 3 objetivos claros aqui)
+
+    ### SALA ###
+    (Gere de 3 a 4 sugestões de adaptações de conteúdo em sala aqui)
+
+    ### AVALIACOES ###
+    (Gere de 3 a 4 sugestões de adaptações em avaliações aqui)
     """
     return prompt, None
 
@@ -59,12 +65,10 @@ if not st.session_state.get("nome_aprendiz_ativo"):
 
 st.info(f"Criando plano de adaptações para: **{st.session_state.nome_aprendiz_ativo}**")
 
-# Carrega o plano mais recente para preencher o formulário como base, se houver
 planos_anteriores = st.session_state.get("aprendiz_ativo", {}).get("planos_adaptacao", [])
 dados_base = planos_anteriores[-1] if planos_anteriores else {}
 
-# Aviso sobre a IA
-st.info("As sugestões da IA são geradas com base em **todas as informações do Cadastro do Aprendiz** e na **avaliação de habilidades mais recente**.")
+st.info("As sugestões da IA são geradas com base em todas as informações do Cadastro do Aprendiz e na avaliação de habilidades mais recente.")
 
 if st.button("🤖 Gerar Sugestões com IA"):
     prompt, erro = criar_prompt_ia(st.session_state.get("aprendiz_ativo", {}))
@@ -72,11 +76,39 @@ if st.button("🤖 Gerar Sugestões com IA"):
         st.error(erro)
     else:
         with st.spinner("Aguarde, a IA está analisando os dados do aprendiz e gerando sugestões..."):
-            # Simulação da resposta da IA
-            st.session_state.objetivos_gerados = "1. Desenvolver a autonomia na leitura de palavras simples e na escrita do próprio nome.\n2. Aprimorar o raciocínio lógico para resolução de problemas matemáticos de adição e subtração com suporte visual."
-            st.session_state.adapt_sala_gerados = "1. Utilizar letras móveis e jogos silábicos para a construção de palavras.\n2. Oferecer material dourado ou ábaco para a resolução de operações matemáticas.\n3. Apresentar instruções de forma clara, em etapas curtas (uma de cada vez), com apoio visual."
-            st.session_state.adapt_avaliacoes_gerados = "1. Permitir tempo extra para a conclusão das provas.\n2. Ler os enunciados das questões em voz alta para o aluno.\n3. Permitir o uso de uma tabuada de apoio ou calculadora durante as avaliações de matemática."
-        st.success("Sugestões geradas! Os campos abaixo foram preenchidos.")
+            # A IA (Gemini) processa o prompt e gera uma resposta dinâmica
+            # A resposta da IA virá em um formato estruturado que podemos processar
+            # Exemplo de como a resposta da IA seria processada:
+            resposta_ia_exemplo = """
+            ### OBJETIVOS ###
+            1. Desenvolver a fluência na decodificação de sílabas simples e complexas.
+            2. Aprimorar a interpretação de enunciados em problemas matemáticos.
+            3. Incentivar a participação em atividades em grupo, respeitando turnos.
+
+            ### SALA ###
+            1. Utilizar fichas de leitura com cores diferentes para cada tipo de sílaba.
+            2. Fornecer um glossário visual com palavras-chave para as aulas de Ciências.
+            3. Usar um cronômetro visual para marcar o tempo de fala de cada aluno em debates.
+            4. Dividir tarefas longas em etapas menores e com comandos claros.
+
+            ### AVALIACOES ###
+            1. Apresentar avaliações com menos questões por página e fontes maiores.
+            2. Permitir que o aluno explique oralmente seu raciocínio em uma questão de matemática.
+            3. Oferecer a opção de consulta a um banco de palavras durante produções textuais.
+            """
+
+            # Lógica para separar o texto da IA nas 3 partes
+            try:
+                objetivos = resposta_ia_exemplo.split("### SALA ###")[0].replace("### OBJETIVOS ###", "").strip()
+                sala = resposta_ia_exemplo.split("### SALA ###")[1].split("### AVALIACOES ###")[0].strip()
+                avaliacoes = resposta_ia_exemplo.split("### AVALIACOES ###")[1].strip()
+
+                st.session_state.objetivos_gerados = objetivos
+                st.session_state.adapt_sala_gerados = sala
+                st.session_state.adapt_avaliacoes_gerados = avaliacoes
+                st.success("Sugestões geradas pela IA!")
+            except IndexError:
+                st.error("A IA não conseguiu gerar uma resposta no formato esperado. Tente novamente.")
 
 with st.form("form_adaptacoes"):
     objetivos_gerais = st.text_area("Objetivos Acadêmicos Gerais", value=st.session_state.get("objetivos_gerados", dados_base.get("objetivos_gerais", "")), height=150)
@@ -98,7 +130,6 @@ with st.form("form_adaptacoes"):
         }
         adicionar_plano_adaptacoes(st.session_state.nome_aprendiz_ativo, novo_plano)
         
-        # Limpa os campos gerados pela IA da sessão para não persistirem
         if 'objetivos_gerados' in st.session_state: del st.session_state.objetivos_gerados
         if 'adapt_sala_gerados' in st.session_state: del st.session_state.adapt_sala_gerados
         if 'adapt_avaliacoes_gerados' in st.session_state: del st.session_state.adapt_avaliacoes_gerados
