@@ -8,6 +8,29 @@ st.set_page_config(
 )
 
 
+# Redireciona para a página de Login quando acessado com ?goto=login
+try:
+    params = st.query_params  # Streamlit >= 1.32
+except Exception:
+    try:
+        params = st.experimental_get_query_params()  # Streamlit < 1.32
+    except Exception:
+        params = {}
+
+goto = None
+if isinstance(params, dict):
+    val = params.get("goto")
+    if isinstance(val, list):
+        goto = val[0] if val else None
+    else:
+        goto = val
+else:
+    goto = params.get("goto")
+
+if goto == "login":
+    st.switch_page("pages/0_Login.py")
+
+
 def section_header(title: str, subtitle: str | None = None):
     st.markdown(f"<h2 style='color:#6b21a8;margin-bottom:0'>{title}</h2>", unsafe_allow_html=True)
     if subtitle:
@@ -40,7 +63,7 @@ with st.container():
                 <a href="#impacto" style="text-decoration:none;color:#6b7280;padding:8px 6px">Impacto</a>
                 <a href="#contato" style="text-decoration:none;color:#6b7280;padding:8px 6px">Contato</a>
               </nav>
-              <a href="/" style="background:#7c3aed;color:#fff;padding:12px 24px;border-radius:999px;text-decoration:none;font-size:18px;font-weight:700">Entrar</a>
+              <a href="/?goto=login" style="background:#7c3aed;color:#fff;padding:12px 24px;border-radius:999px;text-decoration:none;font-size:18px;font-weight:700">Entrar</a>
             </header>
             """,
             unsafe_allow_html=True,
