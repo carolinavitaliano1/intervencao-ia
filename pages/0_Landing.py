@@ -33,14 +33,14 @@ with st.container():
     with cols[1]:
         st.markdown(
             """
-            <header style="position:sticky;top:0;background:#fff;border:1px solid #eee;border-radius:14px;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;z-index:10;box-shadow:0 4px 20px rgba(0,0,0,.04)">
-              <div style="font-weight:800;color:#6b21a8;font-size:22px">NeurotechEvoluir</div>
-              <nav style="display:flex;gap:18px;font-size:14px">
-                <a href="#modulos" style="text-decoration:none;color:#6b7280">Módulos</a>
-                <a href="#impacto" style="text-decoration:none;color:#6b7280">Impacto</a>
-                <a href="#contato" style="text-decoration:none;color:#6b7280">Contato</a>
+            <header style="position:sticky;top:0;background:#fff;border:1px solid #eee;border-radius:16px;padding:22px 28px;display:flex;align-items:center;justify-content:space-between;z-index:10;box-shadow:0 6px 24px rgba(0,0,0,.06)">
+              <div style="font-weight:800;color:#6b21a8;font-size:28px">NeurotechEvoluir</div>
+              <nav style="display:flex;gap:28px;font-size:18px;font-weight:600">
+                <a href="#modulos" style="text-decoration:none;color:#6b7280;padding:8px 6px">Módulos</a>
+                <a href="#impacto" style="text-decoration:none;color:#6b7280;padding:8px 6px">Impacto</a>
+                <a href="#contato" style="text-decoration:none;color:#6b7280;padding:8px 6px">Contato</a>
               </nav>
-              <a href="/" style="background:#7c3aed;color:#fff;padding:8px 16px;border-radius:999px;text-decoration:none">Entrar</a>
+              <a href="/" style="background:#7c3aed;color:#fff;padding:12px 24px;border-radius:999px;text-decoration:none;font-size:18px;font-weight:700">Entrar</a>
             </header>
             """,
             unsafe_allow_html=True,
